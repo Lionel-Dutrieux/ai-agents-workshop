@@ -167,7 +167,7 @@ function ChatInner({
   return (
     <div className={cn("flex h-full min-h-0 flex-col", className)}>
       <Conversation>
-        <ConversationContent>
+        <ConversationContent className="mx-auto w-full max-w-3xl">
           {messages.length === 0 ? (
             <ConversationEmptyState
               icon={<MessageSquare className="size-12" />}
@@ -194,19 +194,20 @@ function ChatInner({
         <ConversationScrollButton />
       </Conversation>
 
-      {suggestions && suggestions.length > 0 && messages.length === 0 && (
-        <Suggestions className="mb-2">
-          {suggestions.map((suggestion) => (
-            <Suggestion
-              key={suggestion}
-              suggestion={suggestion}
-              onClick={submit}
-            />
-          ))}
-        </Suggestions>
-      )}
+      <div className="mx-auto w-full max-w-3xl">
+        {suggestions && suggestions.length > 0 && messages.length === 0 && (
+          <Suggestions className="mb-2">
+            {suggestions.map((suggestion) => (
+              <Suggestion
+                key={suggestion}
+                suggestion={suggestion}
+                onClick={submit}
+              />
+            ))}
+          </Suggestions>
+        )}
 
-      <PromptInput onSubmit={handleSubmit}>
+        <PromptInput onSubmit={handleSubmit}>
         <PromptInputBody>
           <PromptInputTextarea
             value={input}
@@ -258,7 +259,8 @@ function ChatInner({
             />
           </div>
         </PromptInputFooter>
-      </PromptInput>
+        </PromptInput>
+      </div>
     </div>
   );
 }
