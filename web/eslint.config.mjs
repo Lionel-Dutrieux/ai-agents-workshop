@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Code vendored (shadcn/ui, AI Elements, client Prisma généré) :
+    // maintenu upstream, exclu du lint du projet.
+    "components/ui/**",
+    "components/ai-elements/**",
+    "lib/generated/**",
   ]),
 ]);
 

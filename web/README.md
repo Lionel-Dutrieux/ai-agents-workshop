@@ -9,6 +9,7 @@ Application principale du workshop : frontend + backend de l'assistant Brewly.
 - **shadcn/ui** + **Tailwind CSS v4**
 - **AI Elements** (`components/ai-elements/`) — composants shadcn officiels pour le AI SDK (conversation, message, prompt-input, tool, reasoning…)
 - **Prisma 7** + **SQLite** (via `@prisma/adapter-better-sqlite3`)
+- **nuqs** — état dans l'URL (adapter branché dans `app/layout.tsx`)
 
 ## Démarrage
 
@@ -30,6 +31,30 @@ L'app tourne sur [http://localhost:3000](http://localhost:3000).
 | `npm run db:generate` | Régénère le client Prisma (`lib/generated/prisma`, non versionné) |
 | `npm run db:migrate` | Applique/crée les migrations sur la base SQLite |
 | `npm run db:studio` | UI d'exploration de la base |
+
+## Le composant `<Chat />` partagé
+
+Chaque exercice réutilise le même composant de chat ([components/chat/](components/chat/)) :
+il gère la conversation, le streaming, les tool calls et le reasoning — seule l'API change.
+
+```tsx
+// app/01-chat/page.tsx — Server Component (SSR), le chat est un îlot client
+import { Chat } from "@/components/chat";
+
+export default function Page() {
+  return (
+    <main className="mx-auto h-dvh max-w-3xl p-6">
+      <Chat
+        api="/api/01-chat"
+        suggestions={["Quels cafés conseillez-vous pour un espresso corsé ?"]}
+      />
+    </main>
+  );
+}
+```
+
+Props utiles : `api` (endpoint de l'exercice), `body` (champs additionnels envoyés au backend),
+`suggestions`, `placeholder`, `emptyStateTitle`, `emptyStateDescription`.
 
 ## Points d'attention
 
