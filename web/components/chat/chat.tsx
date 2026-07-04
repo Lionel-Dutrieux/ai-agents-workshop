@@ -2,87 +2,27 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { MessageSquare } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
-import { Suspense, useMemo, useState, useSyncExternalStore } from "react";
-import {
-  Context,
-  ContextCacheUsage,
-  ContextContent,
-  ContextContentBody,
-  ContextContentFooter,
-  ContextContentHeader,
-  ContextInputUsage,
-  ContextOutputUsage,
-  ContextReasoningUsage,
-  ContextTrigger,
-} from "@/components/ai-elements/context";
-import {
-  Conversation,
-  ConversationContent,
-  ConversationEmptyState,
-  ConversationScrollButton,
-} from "@/components/ai-elements/conversation";
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputFooter,
-  type PromptInputMessage,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputTools,
-} from "@/components/ai-elements/prompt-input";
-import {
-  Suggestion,
-  Suggestions,
-} from "@/components/ai-elements/suggestion";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { ChatMessage } from "./chat-message";
-import { ChatModelSelector } from "./chat-model-selector";
-import { McpServersDialog, type McpServer } from "./mcp-servers-dialog";
+import { ChatComposer } from "./chat-composer";
+import { ChatHeader } from "./chat-header";
+import { ChatHistoryPanel } from "./chat-history-panel";
+import { ChatMessages } from "./chat-messages";
+import { ChatSuggestions } from "./chat-suggestions";
+import { ChatWelcome } from "./chat-welcome";
 import {
   type ChatModel,
   DEFAULT_CHAT_MODELS,
   DEFAULT_MODEL_ID,
 } from "./models";
 import type { ChatUIMessage } from "./types";
+import { useChatHistory } from "./use-chat-history";
+import { useMcpServers } from "./use-mcp-servers";
 
-const MCP_SERVERS_STORAGE_KEY = "workshop:mcp-servers";
-
-// Les serveurs MCP sont persistés dans localStorage, lu comme un store
-// externe (rendu serveur : liste vide, pas de mismatch d'hydratation).
-function subscribeToMcpServers(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-}
-
-function getMcpServersSnapshot() {
-  return localStorage.getItem(MCP_SERVERS_STORAGE_KEY) ?? "[]";
-}
-
-function useMcpServers() {
-  const json = useSyncExternalStore(
-    subscribeToMcpServers,
-    getMcpServersSnapshot,
-    () => "[]"
-  );
-  const servers = useMemo<McpServer[]>(() => {
-    try {
-      return JSON.parse(json);
-    } catch {
-      return [];
-    }
-  }, [json]);
-
-  const setServers = (next: McpServer[]) => {
-    localStorage.setItem(MCP_SERVERS_STORAGE_KEY, JSON.stringify(next));
-    // L'événement "storage" ne se déclenche pas dans l'onglet courant.
-    window.dispatchEvent(new StorageEvent("storage", { key: MCP_SERVERS_STORAGE_KEY }));
-  };
-
-  return [servers, setServers] as const;
-}
+/** Closure de persistance courante, appelée depuis `onFinish`. */
+type ChatHistoryRef = (messages: ChatUIMessage[]) => Promise<void>;
 
 export type ChatProps = {
   /** Endpoint de l'API de chat, propre à chaque exercice (ex. "/api/01-chat"). */
@@ -128,15 +68,40 @@ function ChatInner({
   className,
 }: ChatProps) {
   const [input, setInput] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [model, setModel] = useQueryState(
     "model",
     parseAsString.withDefault(defaultModelId)
   );
   const [mcpServers, setMcpServers] = useMcpServers();
 
+  // Scope de l'historique : le dernier segment de l'endpoint (ex. "01-chat").
+  const scope = useMemo(() => api.split("/").filter(Boolean).at(-1) ?? api, [api]);
+
   const transport = useMemo(() => new DefaultChatTransport({ api }), [api]);
-  const { messages, sendMessage, status, stop, error } =
-    useChat<ChatUIMessage>({ transport });
+
+  // La persistance est appelée depuis onFinish, mais `save` dépend de l'état de
+  // l'historique (lui-même construit à partir de `setMessages`). Une ref casse
+  // cette dépendance circulaire tout en gardant toujours la dernière closure.
+  const saveRef = useRef<ChatHistoryRef>(null);
+
+  const { messages, sendMessage, status, stop, error, setMessages } =
+    useChat<ChatUIMessage>({
+      transport,
+      onFinish: ({ messages: finalMessages, isAbort, isError }) => {
+        if (isAbort || isError) {
+          return;
+        }
+        void saveRef.current?.(finalMessages);
+      },
+    });
+
+  const history = useChatHistory({ scope, setMessages });
+
+  // Garde la ref synchronisée avec la dernière closure de persistance.
+  useEffect(() => {
+    saveRef.current = history.save;
+  }, [history.save]);
 
   const submit = (text: string) => {
     if (!text.trim()) {
@@ -155,112 +120,100 @@ function ChatInner({
     setInput("");
   };
 
-  const handleSubmit = (message: PromptInputMessage) => {
-    submit(message.text);
-  };
-
   // Usage de la dernière réponse : représente la taille actuelle du contexte.
   const usage = messages.findLast(
     (message) => message.role === "assistant" && message.metadata?.usage
   )?.metadata?.usage;
 
+  // Titre de la conversation active, pour le header.
+  const activeTitle = history.conversationId
+    ? (history.conversations.find(
+        (conversation) => conversation.id === history.conversationId
+      )?.title ?? null)
+    : null;
+
+  const isEmpty = messages.length === 0;
+  const headerTitle = activeTitle ?? (isEmpty ? null : "Nouvelle conversation");
+
+  const composer = (
+    <ChatComposer
+      contextWindow={contextWindow}
+      input={input}
+      mcpServers={mcpServers}
+      model={model}
+      models={models}
+      onInputChange={setInput}
+      onMcpServersChange={setMcpServers}
+      onModelChange={setModel}
+      onStop={stop}
+      onSubmit={submit}
+      placeholder={placeholder}
+      showMcpServers={showMcpServers}
+      status={status}
+      usage={usage}
+    />
+  );
+
   return (
-    <div className={cn("flex h-full min-h-0 flex-col", className)}>
-      <Conversation>
-        <ConversationContent className="mx-auto w-full max-w-3xl">
-          {messages.length === 0 ? (
-            <ConversationEmptyState
-              icon={<MessageSquare className="size-12" />}
-              title={emptyStateTitle}
-              description={emptyStateDescription}
-            />
-          ) : (
-            messages.map((message, index) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                isLastMessage={index === messages.length - 1}
-                isStreaming={status === "streaming"}
-              />
-            ))
-          )}
-          {status === "submitted" && <Spinner className="mx-auto" />}
-          {error && (
-            <p className="rounded-md bg-destructive/10 p-3 text-destructive text-sm">
-              Une erreur est survenue : {error.message}
-            </p>
-          )}
-        </ConversationContent>
-        <ConversationScrollButton />
-      </Conversation>
+    <div className={cn("relative flex h-full min-h-0 overflow-hidden", className)}>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <ChatHeader
+          historyOpen={historyOpen}
+          onNew={() => void history.startNew()}
+          onToggleHistory={() => setHistoryOpen((open) => !open)}
+          title={headerTitle}
+        />
 
-      <div className="mx-auto w-full max-w-3xl">
-        {suggestions && suggestions.length > 0 && messages.length === 0 && (
-          <Suggestions className="mb-2">
-            {suggestions.map((suggestion) => (
-              <Suggestion
-                key={suggestion}
-                suggestion={suggestion}
-                onClick={submit}
+        {isEmpty ? (
+          // Accueil : saisie centrée, façon ChatGPT / Claude.
+          <div className="flex flex-1 flex-col items-center justify-center px-4">
+            <div className="-mt-8 w-full max-w-2xl space-y-6">
+              <ChatWelcome
+                description={emptyStateDescription}
+                title={emptyStateTitle}
               />
-            ))}
-          </Suggestions>
-        )}
-
-        <PromptInput onSubmit={handleSubmit}>
-        <PromptInputBody>
-          <PromptInputTextarea
-            value={input}
-            placeholder={placeholder}
-            onChange={(e) => setInput(e.currentTarget.value)}
-          />
-        </PromptInputBody>
-        <PromptInputFooter>
-          <PromptInputTools>
-            {models.length > 0 && (
-              <ChatModelSelector
-                models={models}
-                value={model}
-                onValueChange={setModel}
-              />
-            )}
-            {showMcpServers && (
-              <McpServersDialog
-                servers={mcpServers}
-                onServersChange={setMcpServers}
-              />
-            )}
-          </PromptInputTools>
-          <div className="flex items-center gap-2">
-            {usage && (
-              <Context
-                maxTokens={contextWindow}
-                usedTokens={usage.totalTokens ?? 0}
-                usage={usage}
-                modelId={model}
-              >
-                <ContextTrigger />
-                <ContextContent>
-                  <ContextContentHeader />
-                  <ContextContentBody>
-                    <ContextInputUsage />
-                    <ContextOutputUsage />
-                    <ContextReasoningUsage />
-                    <ContextCacheUsage />
-                  </ContextContentBody>
-                  <ContextContentFooter />
-                </ContextContent>
-              </Context>
-            )}
-            <PromptInputSubmit
-              status={status}
-              onStop={stop}
-              disabled={status === "ready" && !input.trim()}
-            />
+              {composer}
+              <ChatSuggestions onSelect={submit} suggestions={suggestions} />
+            </div>
           </div>
-        </PromptInputFooter>
-        </PromptInput>
+        ) : (
+          // Conversation lancée : messages qui défilent, saisie ancrée en bas.
+          <>
+            <ChatMessages
+              emptyStateDescription={emptyStateDescription}
+              emptyStateTitle={emptyStateTitle}
+              error={error}
+              messages={messages}
+              status={status}
+            />
+            <div className="px-4 pb-4">
+              <div className="mx-auto w-full max-w-3xl">{composer}</div>
+            </div>
+          </>
+        )}
       </div>
+
+      {historyOpen && (
+        <>
+          {/* En dessous de lg, le volet passe en superposition : ce fond
+              cliquable le referme sans écraser la largeur du chat. */}
+          <button
+            aria-label="Fermer l'historique"
+            className="absolute inset-0 z-20 bg-foreground/20 duration-150 animate-in fade-in lg:hidden"
+            onClick={() => setHistoryOpen(false)}
+            type="button"
+          />
+          <ChatHistoryPanel
+            activeId={history.conversationId}
+            className="absolute inset-y-0 right-0 z-30 shadow-xl lg:static lg:z-auto lg:shadow-none"
+            conversations={history.conversations}
+            onClose={() => setHistoryOpen(false)}
+            onDelete={(id) => void history.remove(id)}
+            onNew={() => void history.startNew()}
+            onSelect={(id) => void history.select(id)}
+          />
+        </>
+      )}
     </div>
   );
 }

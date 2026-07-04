@@ -11,3 +11,37 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+/// Une conversation de chat persistée localement, scopée par exercice.
+model Conversation {
+  /// UUID généré côté client au premier message.
+  id        String    @id
+  /// Exercice d'origine (ex. "01-chat"), dérivé de l'endpoint API.
+  exercise  String
+  /// Titre lisible, dérivé du premier message utilisateur.
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  messages  Message[]
+
+  @@index([exercise, updatedAt])
+}
+
+/// Un message au format UIMessage du AI SDK, sérialisé pour SQLite.
+model Message {
+  id             Int          @id @default(autoincrement())
+  /// Identifiant du UIMessage (stable côté client), utilisé comme clé React.
+  uiId           String
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  /// `UIMessage.parts` sérialisé en JSON (SQLite n'a pas de type JSON natif).
+  parts          String
+  /// `UIMessage.metadata` sérialisé en JSON (usage, modelId…).
+  metadata       String?
+  /// Position dans la conversation, pour restaurer l'ordre.
+  position       Int
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, position])
+}
