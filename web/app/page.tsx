@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TechStackDialog } from "@/components/tech-stack-dialog";
 
 const exercises = [
   {
@@ -71,6 +72,9 @@ export default function Home() {
           <strong>Brewly</strong>, une boutique de café dont vous allez
           construire l&apos;assistant de support.
         </p>
+        <div>
+          <TechStackDialog />
+        </div>
       </header>
 
       <section className="mt-12 flex flex-col gap-4">
