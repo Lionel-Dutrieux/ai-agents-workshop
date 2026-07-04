@@ -7,6 +7,7 @@ Application principale du workshop : frontend + backend de l'assistant Brewly.
 - **Next.js 16** (App Router, Turbopack)
 - **AI SDK v7** (`ai`, `@ai-sdk/react`) + **zod v4**
 - **shadcn/ui** + **Tailwind CSS v4**
+- **AI Elements** (`components/ai-elements/`) — composants shadcn officiels pour le AI SDK (conversation, message, prompt-input, tool, reasoning…)
 - **Prisma 7** + **SQLite** (via `@prisma/adapter-better-sqlite3`)
 
 ## Démarrage
