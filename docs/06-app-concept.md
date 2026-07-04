@@ -11,18 +11,18 @@
 - **Tout le monde comprend le domaine** : commandes, livraisons, stock, remboursements. Zéro temps perdu à expliquer le métier.
 - **L'utilité de chaque concept devient évidente** : un chatbot qui ne connaît pas vos commandes est inutile → il faut des *tools*. Une réclamation demande plusieurs vérifications → il faut un *agent*. D'autres apps veulent accéder à la boutique → il faut *MCP*.
 - **La progression est naturelle** : chaque module ajoute une capacité visible à la même app, plutôt que 6 exemples déconnectés.
-- **Données 100% mockées** : quelques fichiers JSON (produits, commandes, clients). Pas de vraie DB, pas de réseau requis pour les données.
+- **Données locales et portables** : une base **SQLite** gérée par **Prisma** et remplie par un seed (produits, commandes, clients). Pas de serveur de DB, pas de réseau requis pour les données.
 
 ## Les données de la boutique
 
-Un petit jeu de données mock, partagé par tous les modules (dossier `web/data/` ou un package partagé) :
+Un petit jeu de données seedé dans SQLite via Prisma (`web/prisma/`), partagé par tous les modules :
 
-| Fichier | Contenu | Exemples de champs |
+| Modèle | Contenu | Exemples de champs |
 |---|---|---|
-| `products.json` | ~15 produits (machines, grains, accessoires) | id, nom, prix, stock, description |
-| `orders.json` | ~20 commandes à des états variés | id, clientId, articles, statut (`pending`, `shipped`, `delivered`, `lost`…), dates, transporteur |
-| `customers.json` | ~10 clients | id, nom, email, historique |
-| `policies.md` | Politique de retour/remboursement en langage naturel | délais, conditions, cas particuliers |
+| `Product` | ~15 produits (machines, grains, accessoires) | id, nom, prix, stock, description |
+| `Order` | ~20 commandes à des états variés | id, clientId, articles, statut (`pending`, `shipped`, `delivered`, `lost`…), dates, transporteur |
+| `Customer` | ~10 clients | id, nom, email, historique |
+| `policies.md` (fichier) | Politique de retour/remboursement en langage naturel | délais, conditions, cas particuliers |
 
 Les statuts variés (colis perdu, retard, livré) permettent des scénarios riches pour l'agent. `policies.md` sert de "connaissance" que le modèle doit appliquer — un bon aperçu du raisonnement sur règles métier.
 
@@ -64,4 +64,4 @@ Le bonus .NET reprend ce même exemple en C#.
 ## Ce que ce fil rouge ne couvre pas (assumé)
 
 - RAG / embeddings : `policies.md` est assez court pour tenir dans le contexte. On le mentionne comme extension possible, sans l'implémenter.
-- Auth, paiements réels, persistance : hors scope, données mock en lecture (+ écriture simulée pour `createRefund`).
+- Auth, paiements réels : hors scope. La persistance se limite à la SQLite locale seedée (+ écriture pour `createRefund`).

@@ -20,7 +20,7 @@ Liste des décisions à prendre avant ou pendant la construction du contenu.
 
 - [ ] Créer le repo distant (GitHub) et pousser les deux branches.
 - [ ] Tags/branches "checkpoint" par module pour les participants perdus — utile ou surcharge ?
-- [ ] Versions à figer : Next.js, AI SDK (v5 ?), @modelcontextprotocol/sdk, Node minimum.
+- [x] Versions à figer → **figées côté web/** : Next.js 16.2, AI SDK v7, zod v4, Prisma 7 + SQLite, Tailwind v4, shadcn/ui. Reste : @modelcontextprotocol/sdk, version Node minimum à annoncer.
 - [ ] Prérequis machine à annoncer aux participants (Node, pnpm/npm, .NET SDK pour le bonus, éditeur).
 
 ## Jour J
