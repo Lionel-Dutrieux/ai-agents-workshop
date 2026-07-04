@@ -18,6 +18,7 @@ Workshop pratique (3h) : construire des agents IA avec le **AI SDK (Vercel)**, *
 - [Déroulé du workshop (3h)](docs/03-workshop-flow.md)
 - [Détail des modules](docs/04-modules.md)
 - [Questions ouvertes / à affiner](docs/05-open-questions.md)
+- [Fil rouge : l'application « Brewly »](docs/06-app-concept.md)
 
 ## Stack
 

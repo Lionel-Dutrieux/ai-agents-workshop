@@ -10,7 +10,7 @@ Liste des décisions à prendre avant ou pendant la construction du contenu.
 
 ## Contenu
 
-- [ ] Fil rouge / thème des exemples (un même domaine métier sur tous les modules rend le workshop plus cohérent — ex. assistant de gestion de tâches, agent e-commerce, etc.).
+- [x] Fil rouge / thème des exemples → **décidé : « Brewly », assistant de support d'un e-shop de café** — voir [06-app-concept.md](06-app-concept.md).
 - [ ] Langue du contenu du workshop : français ou anglais ? (les docs de planification sont en FR, le code/README des modules pourrait être en EN).
 - [ ] Périmètre exact du module MCP : stdio uniquement, ou aussi transport HTTP ?
 - [ ] Module Foundry : quel niveau de compte/accès Azure faut-il ? Peut-on faire une démo sans que les participants aient un compte ?
