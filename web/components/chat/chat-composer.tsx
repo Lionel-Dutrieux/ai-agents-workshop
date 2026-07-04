@@ -77,6 +77,7 @@ export function ChatComposer({
   };
 
   return (
+    <div>
     <PromptInput
       className="rounded-3xl shadow-sm transition-shadow focus-within:shadow-md"
       onSubmit={handleSubmit}
@@ -130,12 +131,20 @@ export function ChatComposer({
             </Context>
           )}
           <PromptInputSubmit
-            disabled={status === "ready" && !input.trim()}
+            disabled={status === "ready" && (!(input.trim() && model))}
             onStop={onStop}
             status={status}
           />
         </div>
       </PromptInputFooter>
     </PromptInput>
+
+      {models.length === 0 && (
+        <p className="mt-2 text-center text-muted-foreground text-xs">
+          Aucun modèle configuré. Ajoutez-en un via le bouton{" "}
+          <span className="font-medium text-foreground">Modèles</span>.
+        </p>
+      )}
+    </div>
   );
 }

@@ -68,10 +68,13 @@ function ChatInner({
   // Modèles disponibles (ajoutés dynamiquement), chargés depuis la base.
   const { options: models, refresh: refreshModels } = useModels();
 
-  // Garde une sélection valide : si le modèle courant n'existe plus (ou aucun
-  // n'est encore choisi), on retombe sur le premier disponible.
+  // Garde une sélection valide : premier modèle par défaut, et on efface une
+  // sélection devenue invalide (modèle supprimé, ou plus aucun modèle).
   useEffect(() => {
     if (models.length === 0) {
+      if (model) {
+        void setModel(null);
+      }
       return;
     }
     if (!model || !models.some((option) => option.id === model)) {
@@ -109,7 +112,8 @@ function ChatInner({
   }, [history.save]);
 
   const submit = (text: string) => {
-    if (!text.trim()) {
+    // Sans modèle sélectionné, le backend ne pourrait pas résoudre le provider.
+    if (!(text.trim() && model)) {
       return;
     }
     sendMessage(
@@ -139,9 +143,13 @@ function ChatInner({
   const isEmpty = messages.length === 0;
   const headerTitle = activeTitle ?? (isEmpty ? null : "Nouvelle conversation");
 
+  // Jauge dimensionnée sur le modèle actif (à défaut, la valeur de la prop).
+  const activeContextWindow =
+    models.find((option) => option.id === model)?.contextWindow ?? contextWindow;
+
   const composer = (
     <ChatComposer
-      contextWindow={contextWindow}
+      contextWindow={activeContextWindow}
       input={input}
       mcpCount={mcpCount}
       model={model}
@@ -178,7 +186,10 @@ function ChatInner({
                 title={emptyStateTitle}
               />
               {composer}
-              <ChatSuggestions onSelect={submit} suggestions={suggestions} />
+              <ChatSuggestions
+                onSelect={submit}
+                suggestions={models.length > 0 ? suggestions : undefined}
+              />
             </div>
           </div>
         ) : (

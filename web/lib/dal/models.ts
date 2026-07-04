@@ -13,11 +13,13 @@ import { prisma } from "@/lib/prisma";
 /** Type de fournisseur — pilote les préréglages du formulaire et le badge. */
 export type ModelProvider = "lmstudio" | "ollama" | "azure" | "custom";
 
-/** Option minimale pour le sélecteur (aucun secret). */
+/** Option pour le sélecteur (aucun secret). */
 export type ModelOption = {
   id: string;
   label: string;
   provider: string;
+  /** Fenêtre de contexte, pour dimensionner la jauge de tokens. */
+  contextWindow: number | null;
 };
 
 /** Vue de gestion : tout sauf la valeur de la clé (`hasApiKey` à la place). */
@@ -57,7 +59,7 @@ export async function listModelOptions(): Promise<ModelOption[]> {
   const rows = await prisma.model.findMany({
     where: { enabled: true },
     orderBy: { createdAt: "asc" },
-    select: { id: true, label: true, provider: true },
+    select: { id: true, label: true, provider: true, contextWindow: true },
   });
   return rows;
 }
