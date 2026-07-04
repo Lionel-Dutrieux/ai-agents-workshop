@@ -6,6 +6,11 @@ import {
   SquarePenIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type ChatHeaderProps = {
   /** Titre de la conversation active, ou `null` pour un nouveau chat. */
@@ -26,29 +31,42 @@ export function ChatHeader({
     <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-3">
       <p className="min-w-0 truncate font-medium text-sm">{title}</p>
       <div className="flex shrink-0 items-center gap-0.5">
-        <Button
-          aria-label="Nouveau chat"
-          onClick={onNew}
-          size="icon-sm"
-          variant="ghost"
-        >
-          <SquarePenIcon className="size-4" />
-        </Button>
-        <Button
-          aria-label={
-            historyOpen ? "Masquer l'historique" : "Afficher l'historique"
-          }
-          aria-pressed={historyOpen}
-          onClick={onToggleHistory}
-          size="icon-sm"
-          variant="ghost"
-        >
-          {historyOpen ? (
-            <PanelRightCloseIcon className="size-4" />
-          ) : (
-            <PanelRightIcon className="size-4" />
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              aria-label="Nouveau chat"
+              onClick={onNew}
+              size="icon-sm"
+              variant="ghost"
+            >
+              <SquarePenIcon className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Nouveau chat</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              aria-label={
+                historyOpen ? "Masquer l'historique" : "Afficher l'historique"
+              }
+              aria-pressed={historyOpen}
+              onClick={onToggleHistory}
+              size="icon-sm"
+              variant="ghost"
+            >
+              {historyOpen ? (
+                <PanelRightCloseIcon className="size-4" />
+              ) : (
+                <PanelRightIcon className="size-4" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {historyOpen ? "Masquer l'historique" : "Afficher l'historique"}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </header>
   );

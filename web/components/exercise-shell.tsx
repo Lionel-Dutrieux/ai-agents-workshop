@@ -1,7 +1,14 @@
-import { ArrowLeft } from "lucide-react";
+"use client";
+
+import { ArrowLeft, PanelLeftIcon } from "lucide-react";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ExercisePanels } from "./exercise-panels";
 
 export type ExerciseShellProps = {
@@ -20,7 +27,7 @@ export type ExerciseShellProps = {
 
 /**
  * Layout partagé par toutes les vues d'exercice : header commun,
- * infos complémentaires à gauche, chat/agent à droite.
+ * infos complémentaires à gauche (masquables), chat/agent à droite.
  */
 export function ExerciseShell({
   number,
@@ -29,24 +36,52 @@ export function ExerciseShell({
   info,
   children,
 }: ExerciseShellProps) {
+  const [infoOpen, setInfoOpen] = useState(true);
+
   return (
     <div className="flex h-dvh flex-col">
-      <header className="flex shrink-0 items-center gap-3 border-b px-4 py-3 md:px-6">
-        <Button asChild variant="ghost" size="icon-sm">
-          <Link href="/" aria-label="Retour aux exercices">
+      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-3 md:px-4">
+        <Button asChild size="icon-sm" variant="ghost">
+          <Link aria-label="Retour aux exercices" href="/">
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
-        <span className="font-mono text-sm text-primary">{number}</span>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              aria-label={infoOpen ? "Masquer les infos" : "Afficher les infos"}
+              aria-pressed={infoOpen}
+              className="hidden text-muted-foreground data-[state=on]:text-foreground md:inline-flex"
+              data-state={infoOpen ? "on" : "off"}
+              onClick={() => setInfoOpen((open) => !open)}
+              size="icon-sm"
+              variant="ghost"
+            >
+              <PanelLeftIcon className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {infoOpen ? "Masquer les infos" : "Afficher les infos"}
+          </TooltipContent>
+        </Tooltip>
+
+        <span className="ml-1 font-mono text-primary text-sm">{number}</span>
         <h1 className="font-semibold tracking-tight">{title}</h1>
         {description && (
-          <p className="hidden truncate text-sm text-muted-foreground md:block">
+          <p className="hidden truncate text-muted-foreground text-sm md:block">
             — {description}
           </p>
         )}
       </header>
 
-      <ExercisePanels info={info}>{children}</ExercisePanels>
+      <ExercisePanels
+        info={info}
+        infoOpen={infoOpen}
+        onInfoOpenChange={setInfoOpen}
+      >
+        {children}
+      </ExercisePanels>
     </div>
   );
 }

@@ -24,8 +24,8 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { ChatModelSelector } from "./chat-model-selector";
 import { McpServersDialog } from "./mcp-servers-dialog";
-import type { McpServer } from "./mcp-servers-dialog";
-import type { ChatModel } from "./models";
+import type { ModelOption } from "./model-actions";
+import { ModelManagerDialog } from "./model-manager-dialog";
 
 export type ChatComposerProps = {
   input: string;
@@ -35,13 +35,15 @@ export type ChatComposerProps = {
   status: ChatStatus;
   placeholder: string;
 
-  models: ChatModel[];
+  models: ModelOption[];
   model: string;
   onModelChange: (modelId: string) => void;
+  /** Rafraîchit la liste des modèles après ajout/suppression. */
+  onModelsChange: () => void;
 
   showMcpServers: boolean;
-  mcpServers: McpServer[];
-  onMcpServersChange: (servers: McpServer[]) => void;
+  mcpCount: number;
+  onMcpServersChange: () => void;
 
   /** Usage de la dernière réponse, pour la jauge de contexte. */
   usage?: LanguageModelUsage;
@@ -63,8 +65,9 @@ export function ChatComposer({
   models,
   model,
   onModelChange,
+  onModelsChange,
   showMcpServers,
-  mcpServers,
+  mcpCount,
   onMcpServersChange,
   usage,
   contextWindow,
@@ -94,10 +97,14 @@ export function ChatComposer({
               value={model}
             />
           )}
+          <ModelManagerDialog
+            count={models.length}
+            onModelsChange={onModelsChange}
+          />
           {showMcpServers && (
             <McpServersDialog
+              count={mcpCount}
               onServersChange={onMcpServersChange}
-              servers={mcpServers}
             />
           )}
         </PromptInputTools>

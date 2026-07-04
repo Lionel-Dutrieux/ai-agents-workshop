@@ -1,7 +1,8 @@
 "use client";
 
-import { PanelLeft } from "lucide-react";
-import type { ReactNode } from "react";
+import { PanelLeftIcon } from "lucide-react";
+import { type ReactNode, useEffect, useRef } from "react";
+import type { PanelImperativeHandle, PanelSize } from "react-resizable-panels";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -11,49 +12,86 @@ import {
 export type ExercisePanelsProps = {
   info?: ReactNode;
   children: ReactNode;
+  /** Panneau d'infos affiché ? Piloté par le header de l'exercice. */
+  infoOpen: boolean;
+  onInfoOpenChange: (open: boolean) => void;
 };
 
 /**
  * Corps redimensionnable du layout d'exercice : panneau d'infos à gauche
- * (redimensionnable et collapsible), chat/agent à droite.
+ * (redimensionnable, masquable via bouton), chat/agent à droite.
  *
  * ⚠️ react-resizable-panels v4 : un `number` est interprété en PIXELS,
  * les pourcentages doivent être des strings ("38%").
  */
-export function ExercisePanels({ info, children }: ExercisePanelsProps) {
+export function ExercisePanels({
+  info,
+  children,
+  infoOpen,
+  onInfoOpenChange,
+}: ExercisePanelsProps) {
+  const infoPanelRef = useRef<PanelImperativeHandle>(null);
+  const collapsedRef = useRef(!infoOpen);
+
+  // Reflète l'état `infoOpen` (bouton) sur le panneau.
+  useEffect(() => {
+    const panel = infoPanelRef.current;
+    if (!panel) {
+      return;
+    }
+    if (infoOpen && panel.isCollapsed()) {
+      panel.expand();
+    } else if (!infoOpen && !panel.isCollapsed()) {
+      panel.collapse();
+    }
+  }, [infoOpen]);
+
+  // Sync inverse : un collapse/expand au drag met à jour le bouton.
+  const handleResize = (panelSize: PanelSize) => {
+    const collapsed = panelSize.asPercentage === 0;
+    if (collapsed !== collapsedRef.current) {
+      collapsedRef.current = collapsed;
+      onInfoOpenChange(!collapsed);
+    }
+  };
+
   return (
     <div className="min-h-0 flex-1">
       <ResizablePanelGroup orientation="horizontal" id="exercise-layout">
         <ResizablePanel
-          id="info"
-          defaultSize="38%"
-          minSize="300px"
-          maxSize="620px"
-          collapsible
-          collapsedSize="0px"
           className="hidden md:block"
+          collapsedSize="0px"
+          collapsible
+          defaultSize="34%"
+          id="info"
+          maxSize="560px"
+          minSize="280px"
+          onResize={handleResize}
+          panelRef={infoPanelRef}
         >
-          <aside className="h-full overflow-y-auto bg-muted/30 p-6">
-            {info ?? (
-              <div className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-                <PanelLeft className="size-8" />
-                <p className="text-sm">
-                  Les informations complémentaires de l&apos;exercice
-                  s&apos;afficheront ici.
-                </p>
-              </div>
-            )}
+          <aside className="h-full overflow-y-auto bg-muted/20 p-6">
+            {info ?? <InfoPlaceholder />}
           </aside>
         </ResizablePanel>
 
-        <ResizableHandle withHandle className="hidden md:flex" />
+        <ResizableHandle className="hidden md:flex" withHandle />
 
-        <ResizablePanel id="chat" defaultSize="62%" minSize="440px">
-          <section className="flex h-full min-h-0 flex-col p-4 md:p-6">
-            {children}
-          </section>
+        <ResizablePanel defaultSize="66%" id="chat" minSize="440px">
+          <section className="flex h-full min-h-0 flex-col">{children}</section>
         </ResizablePanel>
       </ResizablePanelGroup>
+    </div>
+  );
+}
+
+/** Placeholder discret tant qu'un exercice ne fournit pas de contenu. */
+function InfoPlaceholder() {
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-muted-foreground">
+      <PanelLeftIcon className="size-7 opacity-40" />
+      <p className="max-w-xs text-sm">
+        {"Consignes, données et résultats de l'exercice s'afficheront ici."}
+      </p>
     </div>
   );
 }

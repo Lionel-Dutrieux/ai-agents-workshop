@@ -14,12 +14,20 @@ export {
   type ChatSuggestionsProps,
 } from "./chat-suggestions";
 export { ChatWelcome, type ChatWelcomeProps } from "./chat-welcome";
-export { type McpServer } from "./mcp-servers-dialog";
+export { type ManagedMcpServer } from "./mcp-actions";
 export {
-  type ChatModel,
-  DEFAULT_CHAT_MODELS,
-  DEFAULT_MODEL_ID,
-} from "./models";
+  McpServersDialog,
+  type McpServersDialogProps,
+} from "./mcp-servers-dialog";
+export {
+  type ManagedModel,
+  type ModelOption,
+} from "./model-actions";
+export {
+  ModelManagerDialog,
+  type ModelManagerDialogProps,
+} from "./model-manager-dialog";
 export { type ChatMessageMetadata, type ChatUIMessage } from "./types";
 export { type ChatHistory, useChatHistory } from "./use-chat-history";
 export { useMcpServers } from "./use-mcp-servers";
+export { useModels } from "./use-models";

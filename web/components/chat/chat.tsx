@@ -12,14 +12,10 @@ import { ChatHistoryPanel } from "./chat-history-panel";
 import { ChatMessages } from "./chat-messages";
 import { ChatSuggestions } from "./chat-suggestions";
 import { ChatWelcome } from "./chat-welcome";
-import {
-  type ChatModel,
-  DEFAULT_CHAT_MODELS,
-  DEFAULT_MODEL_ID,
-} from "./models";
 import type { ChatUIMessage } from "./types";
 import { useChatHistory } from "./use-chat-history";
 import { useMcpServers } from "./use-mcp-servers";
+import { useModels } from "./use-models";
 
 /** Closure de persistance courante, appelée depuis `onFinish`. */
 type ChatHistoryRef = (messages: ChatUIMessage[]) => Promise<void>;
@@ -34,10 +30,7 @@ export type ChatProps = {
   emptyStateDescription?: string;
   /** Prompts d'exemple proposés tant que la conversation est vide. */
   suggestions?: string[];
-  /** Modèles proposés dans le sélecteur. Liste vide pour le masquer. */
-  models?: ChatModel[];
-  defaultModelId?: string;
-  /** Affiche la gestion des serveurs MCP (envoyés au backend dans le body). */
+  /** Affiche la gestion des serveurs MCP (lus depuis la base côté serveur). */
   showMcpServers?: boolean;
   /** Taille de la fenêtre de contexte pour la jauge de tokens. */
   contextWindow?: number;
@@ -61,8 +54,6 @@ function ChatInner({
   emptyStateTitle = "Démarrez la conversation",
   emptyStateDescription = "Envoyez un message pour commencer",
   suggestions,
-  models = DEFAULT_CHAT_MODELS,
-  defaultModelId = DEFAULT_MODEL_ID,
   showMcpServers = true,
   contextWindow = 200_000,
   className,
@@ -71,9 +62,23 @@ function ChatInner({
   const [historyOpen, setHistoryOpen] = useState(false);
   const [model, setModel] = useQueryState(
     "model",
-    parseAsString.withDefault(defaultModelId)
+    parseAsString.withDefault("")
   );
-  const [mcpServers, setMcpServers] = useMcpServers();
+
+  // Modèles disponibles (ajoutés dynamiquement), chargés depuis la base.
+  const { options: models, refresh: refreshModels } = useModels();
+
+  // Garde une sélection valide : si le modèle courant n'existe plus (ou aucun
+  // n'est encore choisi), on retombe sur le premier disponible.
+  useEffect(() => {
+    if (models.length === 0) {
+      return;
+    }
+    if (!model || !models.some((option) => option.id === model)) {
+      void setModel(models[0].id);
+    }
+  }, [models, model, setModel]);
+  const { count: mcpCount, refresh: refreshMcp } = useMcpServers();
 
   // Scope de l'historique : le dernier segment de l'endpoint (ex. "01-chat").
   const scope = useMemo(() => api.split("/").filter(Boolean).at(-1) ?? api, [api]);
@@ -113,7 +118,6 @@ function ChatInner({
         body: {
           ...body,
           model,
-          mcpServers: showMcpServers ? mcpServers : undefined,
         },
       }
     );
@@ -139,12 +143,13 @@ function ChatInner({
     <ChatComposer
       contextWindow={contextWindow}
       input={input}
-      mcpServers={mcpServers}
+      mcpCount={mcpCount}
       model={model}
       models={models}
       onInputChange={setInput}
-      onMcpServersChange={setMcpServers}
+      onMcpServersChange={refreshMcp}
       onModelChange={setModel}
+      onModelsChange={refreshModels}
       onStop={stop}
       onSubmit={submit}
       placeholder={placeholder}

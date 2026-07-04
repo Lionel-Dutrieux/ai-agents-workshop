@@ -27,6 +27,45 @@ model Conversation {
   @@index([exercise, updatedAt])
 }
 
+/// Un modèle LLM ajouté dynamiquement, exposé via un endpoint
+/// OpenAI-compatible (Ollama, Azure AI Foundry, etc.).
+model Model {
+  id       String @id @default(cuid())
+  /// Nom affiché dans le sélecteur.
+  label    String
+  /// Type de fournisseur, pour l'affichage/les préréglages : "ollama" | "azure" | "custom".
+  provider String
+  /// URL de base de l'endpoint OpenAI-compatible (ex. "http://localhost:11434/v1").
+  baseUrl  String
+  /// Identifiant du modèle côté fournisseur (ex. "llama3.1", "gpt-4o").
+  modelId  String
+  /// Clé API — SECRET, jamais renvoyée au client. Nulle pour Ollama.
+  apiKey   String?
+  /// Taille de la fenêtre de contexte, pour la jauge de tokens.
+  contextWindow Int?
+  /// Proposé dans le sélecteur ?
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([enabled, createdAt])
+}
+
+/// Un serveur MCP ajouté dynamiquement (transport HTTP).
+model McpServer {
+  id   String @id @default(cuid())
+  name String
+  url  String
+  /// En-têtes HTTP personnalisés (ex. Authorization), sérialisés en JSON.
+  /// SECRET : jamais renvoyés au client, uniquement lus côté serveur.
+  headers   String?
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([enabled, createdAt])
+}
+
 /// Un message au format UIMessage du AI SDK, sérialisé pour SQLite.
 model Message {
   id             Int          @id @default(autoincrement())

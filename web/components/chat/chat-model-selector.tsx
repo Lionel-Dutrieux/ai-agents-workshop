@@ -7,10 +7,10 @@ import {
   PromptInputSelectTrigger,
   PromptInputSelectValue,
 } from "@/components/ai-elements/prompt-input";
-import type { ChatModel } from "./models";
+import type { ModelOption } from "./model-actions";
 
 export type ChatModelSelectorProps = {
-  models: ChatModel[];
+  models: ModelOption[];
   value: string;
   onValueChange: (modelId: string) => void;
 };
@@ -28,7 +28,7 @@ export function ChatModelSelector({
       <PromptInputSelectContent>
         {models.map((model) => (
           <PromptInputSelectItem key={model.id} value={model.id}>
-            {model.name}
+            {model.label}
           </PromptInputSelectItem>
         ))}
       </PromptInputSelectContent>
