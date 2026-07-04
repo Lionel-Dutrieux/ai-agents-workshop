@@ -54,7 +54,19 @@ export default function Page() {
 ```
 
 Props utiles : `api` (endpoint de l'exercice), `body` (champs additionnels envoyés au backend),
-`suggestions`, `placeholder`, `emptyStateTitle`, `emptyStateDescription`.
+`suggestions`, `placeholder`, `emptyStateTitle`, `emptyStateDescription`, `models` /
+`defaultModelId` (sélecteur de modèle), `showMcpServers`, `contextWindow`.
+
+Fonctionnalités intégrées :
+
+- **Sélecteur de modèle** (command palette) — le choix est synchronisé dans l'URL (`?model=`)
+  via nuqs et envoyé au backend dans `body.model`.
+- **Serveurs MCP** — dialog d'ajout/suppression, persistés en localStorage et envoyés
+  dans `body.mcpServers` (`{ id, name, url }[]`).
+- **Jauge de tokens** — s'affiche dès qu'une route API renvoie l'usage via
+  `toUIMessageStreamResponse({ messageMetadata })` (convention typée dans
+  [components/chat/types.ts](components/chat/types.ts)) : fenêtre de contexte,
+  détail input/output/reasoning/cache et coût estimé.
 
 ## Points d'attention
 
