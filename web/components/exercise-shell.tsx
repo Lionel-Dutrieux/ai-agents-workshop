@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, PanelLeftIcon } from "lucide-react";
+import { ArrowLeft, Database, PanelLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -73,6 +73,23 @@ export function ExerciseShell({
             — {description}
           </p>
         )}
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              asChild
+              className="ml-auto shrink-0"
+              size="sm"
+              variant="outline"
+            >
+              <Link aria-label="Ouvrir la sandbox de données" href="/sandbox">
+                <Database className="size-4" />
+                <span className="hidden sm:inline">Sandbox</span>
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Voir et modifier les données de démo</TooltipContent>
+        </Tooltip>
       </header>
 
       <ExercisePanels

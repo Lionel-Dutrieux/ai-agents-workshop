@@ -1,6 +1,15 @@
 "use client";
 
-import { PlusIcon, ServerIcon, Trash2Icon } from "lucide-react";
+import {
+  CheckCircle2,
+  Coffee,
+  Loader2,
+  PlugZap,
+  PlusIcon,
+  ServerIcon,
+  Trash2Icon,
+  XCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { PromptInputButton } from "@/components/ai-elements/prompt-input";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +31,9 @@ import {
   deleteMcpServerAction,
   listManagedMcpServersAction,
   type ManagedMcpServer,
+  type McpPingResult,
+  pingMcpServerAction,
+  pingMcpServerByIdAction,
   updateMcpServerAction,
 } from "./mcp-actions";
 
@@ -71,6 +83,10 @@ export function McpServersDialog({
   const [open, setOpen] = useState(false);
   const [servers, setServers] = useState<ManagedMcpServer[]>([]);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  // Test de connexion (handshake) : id du serveur en cours de test ("form"
+  // pour le formulaire), et dernier résultat affiché.
+  const [pinging, setPinging] = useState<string | null>(null);
+  const [pingResult, setPingResult] = useState<McpPingResult | null>(null);
 
   const isEditing = form.editingId !== null;
 
@@ -84,6 +100,7 @@ export function McpServersDialog({
       refresh();
     } else {
       setForm(EMPTY_FORM);
+      setPingResult(null);
     }
   };
 
@@ -94,6 +111,19 @@ export function McpServersDialog({
       url: server.url,
       headers: "",
     });
+  };
+
+  /** Pré-remplit le formulaire avec NOTRE serveur MCP (celui du module 5). */
+  const applyBrewlyPreset = () => {
+    const origin =
+      typeof window === "undefined" ? "" : window.location.origin;
+    setForm({
+      editingId: null,
+      name: "Brewly (ce projet)",
+      url: `${origin}/api/mcp`,
+      headers: "",
+    });
+    setPingResult(null);
   };
 
   const submit = async () => {
@@ -140,6 +170,35 @@ export function McpServersDialog({
     onServersChange();
   };
 
+  /** Teste l'URL saisie dans le formulaire (handshake + liste des outils). */
+  const testForm = async () => {
+    if (!form.url.trim()) {
+      return;
+    }
+    setPinging("form");
+    setPingResult(null);
+    const parsed = parseHeaders(form.headers);
+    try {
+      const result = await pingMcpServerAction({
+        url: form.url.trim(),
+        headers: Object.keys(parsed).length > 0 ? parsed : undefined,
+      });
+      setPingResult(result);
+    } catch {
+      setPingResult({ ok: false, error: "URL invalide." });
+    } finally {
+      setPinging(null);
+    }
+  };
+
+  /** Teste un serveur enregistré (rejoue ses en-têtes stockés). */
+  const testServer = async (id: string) => {
+    setPinging(id);
+    setPingResult(null);
+    setPingResult(await pingMcpServerByIdAction(id));
+    setPinging(null);
+  };
+
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogTrigger asChild>
@@ -154,7 +213,7 @@ export function McpServersDialog({
         </PromptInputButton>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Serveurs MCP</DialogTitle>
           <DialogDescription>
@@ -172,7 +231,7 @@ export function McpServersDialog({
             servers.map((server) => (
               <div
                 className={cn(
-                  "flex items-center gap-3 rounded-md border px-3 py-2",
+                  "flex items-center gap-2 rounded-md border px-3 py-2",
                   form.editingId === server.id && "border-primary/40 bg-muted/40"
                 )}
                 key={server.id}
@@ -197,6 +256,19 @@ export function McpServersDialog({
                   onCheckedChange={() => toggleEnabled(server)}
                 />
                 <Button
+                  aria-label={`Tester ${server.name}`}
+                  disabled={pinging !== null}
+                  onClick={() => testServer(server.id)}
+                  size="icon-sm"
+                  variant="ghost"
+                >
+                  {pinging === server.id ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <PlugZap className="size-4" />
+                  )}
+                </Button>
+                <Button
                   onClick={() => startEdit(server)}
                   size="sm"
                   variant="ghost"
@@ -216,8 +288,23 @@ export function McpServersDialog({
           )}
         </div>
 
+        {pingResult && <HandshakePanel result={pingResult} />}
+
+        <div className="flex flex-wrap items-center gap-2 border-t pt-4">
+          <span className="text-muted-foreground text-xs">Preset :</span>
+          <Button
+            onClick={applyBrewlyPreset}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            <Coffee className="size-4" />
+            Serveur Brewly (ce projet)
+          </Button>
+        </div>
+
         <form
-          className="flex flex-col gap-3 border-t pt-4"
+          className="flex flex-col gap-3"
           onSubmit={(event) => {
             event.preventDefault();
             submit();
@@ -270,6 +357,19 @@ export function McpServersDialog({
                 Annuler
               </Button>
             )}
+            <Button
+              disabled={pinging !== null || !form.url.trim()}
+              onClick={testForm}
+              type="button"
+              variant="outline"
+            >
+              {pinging === "form" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <PlugZap className="size-4" />
+              )}
+              Tester
+            </Button>
             <Button type="submit">
               <PlusIcon className="size-4" />
               {isEditing ? "Enregistrer" : "Ajouter"}
@@ -278,6 +378,51 @@ export function McpServersDialog({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Résultat visuel d'un handshake MCP : infos serveur + outils exposés. */
+function HandshakePanel({ result }: { result: McpPingResult }) {
+  if (!result.ok) {
+    return (
+      <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
+        <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
+        <div className="min-w-0">
+          <p className="font-medium text-destructive">Connexion échouée</p>
+          <p className="break-words text-muted-foreground text-xs">
+            {result.error}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-emerald-500/40 bg-emerald-500/5 p-3">
+      <div className="flex items-center gap-2">
+        <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+        <p className="font-medium text-sm">
+          Connecté — <span className="font-mono">{result.serverName}</span>{" "}
+          <span className="text-muted-foreground">v{result.serverVersion}</span>
+        </p>
+      </div>
+      <p className="mt-1 text-muted-foreground text-xs">
+        Handshake OK · {result.tools.length} outil(s) exposé(s) par le protocole :
+      </p>
+      <ul className="mt-2 max-h-48 space-y-1.5 overflow-y-auto">
+        {result.tools.map((tool) => (
+          <li
+            className="rounded border bg-background/60 px-2 py-1.5"
+            key={tool.name}
+          >
+            <p className="font-mono text-xs">{tool.name}</p>
+            {tool.description && (
+              <p className="text-muted-foreground text-xs">{tool.description}</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

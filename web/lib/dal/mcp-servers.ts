@@ -63,6 +63,28 @@ export async function countEnabledMcpServers(): Promise<number> {
   return prisma.mcpServer.count({ where: { enabled: true } });
 }
 
+/** Nombre TOTAL de serveurs configurés (activés ou non). */
+export async function countMcpServers(): Promise<number> {
+  return prisma.mcpServer.count();
+}
+
+/**
+ * Config complète d'UN serveur (en-têtes inclus), par id. Réservé au serveur —
+ * sert au test de connexion, qui doit rejouer les en-têtes secrets stockés.
+ */
+export async function getMcpServerConfig(
+  id: string
+): Promise<McpServerConfig | null> {
+  const row = await prisma.mcpServer.findUnique({
+    where: { id },
+    select: { name: true, url: true, headers: true },
+  });
+  if (!row) {
+    return null;
+  }
+  return { name: row.name, url: row.url, headers: parseHeaders(row.headers) };
+}
+
 /** Config des serveurs activés (en-têtes inclus). Réservé au serveur. */
 export async function getEnabledMcpServers(): Promise<McpServerConfig[]> {
   const rows = await prisma.mcpServer.findMany({
