@@ -51,6 +51,71 @@ model Model {
   @@index([enabled, createdAt])
 }
 
+/// Exemple / template de données pour la sandbox CRUD des tutoriels.
+/// Modèle neutre à copier pour créer les vraies données d'un exercice.
+model SandboxItem {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  price     Int      @default(0)
+  inStock   Boolean  @default(true)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// Catalogue produits de Brewly — la « vraie » base lue par les outils du
+/// module 03 (Tool calling). Éditable depuis la sandbox CRUD du tutoriel :
+/// modifier une ligne ici change ce que l'agent répond. Amorcé au 1er accès.
+model BrewlyProduct {
+  id          String   @id @default(cuid())
+  /// Référence catalogue lisible (ex. "CAF-ETH"), unique.
+  reference   String   @unique
+  nom         String
+  /// "cafe" | "machine" | "accessoire".
+  categorie   String
+  /// Prix en euros (décimal → REAL SQLite).
+  prix        Float    @default(0)
+  /// Origine géographique (cafés), null pour machines/accessoires.
+  origine     String?
+  /// Intensité 1–10 (cafés), null sinon.
+  intensite   Int?
+  description  String  @default("")
+  enStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  @@index([categorie])
+  @@index([createdAt])
+}
+
+/// Une commande client de Brewly — données de démo lues par les outils de
+/// l'agent (module 03/04). Éditable depuis la sandbox. `articles` est un
+/// tableau JSON sérialisé (SQLite n'a pas de type liste).
+model BrewlyOrder {
+  id               String   @id @default(cuid())
+  /// Numéro de commande lisible (ex. "1042"), unique.
+  numero           String   @unique
+  /// "en_preparation" | "expediee" | "livree" | "annulee".
+  statut           String
+  /// Libellés des articles, sérialisés en JSON (ex. ["Moulin", "Colombie"]).
+  articles         String   @default("[]")
+  /// Total en euros.
+  total            Float    @default(0)
+  /// Date de commande au format ISO court (yyyy-mm-dd), comme le DTO.
+  commandeeLe      String
+  /// Date de livraison estimée (ISO court), null si inconnue.
+  livraisonEstimee String?
+  transporteur     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+
+  @@index([statut])
+  @@index([createdAt])
+}
+
 /// Un serveur MCP ajouté dynamiquement (transport HTTP).
 model McpServer {
   id   String @id @default(cuid())

@@ -119,6 +119,20 @@ export async function deleteConversation(id: string): Promise<void> {
   });
 }
 
+/** Nombre de conversations persistées (tous exercices confondus). */
+export async function countConversations(): Promise<number> {
+  return prisma.conversation.count();
+}
+
+/**
+ * Efface tout l'historique de chat (cascade sur les messages). Appelé par le
+ * seeder centralisé. Renvoie le nombre de conversations supprimées.
+ */
+export async function deleteAllConversations(): Promise<number> {
+  const { count } = await prisma.conversation.deleteMany();
+  return count;
+}
+
 /** Dérive un titre lisible du premier message utilisateur. */
 function deriveTitle(messages: SaveableMessage[]): string {
   const firstUser = messages.find((message) => message.role === "user");

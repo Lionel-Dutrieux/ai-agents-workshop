@@ -62,10 +62,10 @@ export function ExercisePanels({
           className="hidden md:block"
           collapsedSize="0px"
           collapsible
-          defaultSize="34%"
+          defaultSize="46%"
           id="info"
-          maxSize="560px"
-          minSize="280px"
+          maxSize="62%"
+          minSize="320px"
           onResize={handleResize}
           panelRef={infoPanelRef}
         >
@@ -76,7 +76,7 @@ export function ExercisePanels({
 
         <ResizableHandle className="hidden md:flex" withHandle />
 
-        <ResizablePanel defaultSize="66%" id="chat" minSize="440px">
+        <ResizablePanel defaultSize="54%" id="chat" minSize="420px">
           <section className="flex h-full min-h-0 flex-col">{children}</section>
         </ResizablePanel>
       </ResizablePanelGroup>

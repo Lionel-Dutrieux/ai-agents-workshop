@@ -1,12 +1,14 @@
 import { Chat } from "@/components/chat";
 import { ExerciseShell } from "@/components/exercise-shell";
+import { Chat01Tutorial } from "./tutorial";
 
 export default function Page() {
   return (
     <ExerciseShell
+      description="Appel du modèle et streaming avec le AI SDK"
+      info={<Chat01Tutorial />}
       number="01"
       title="Premier chat"
-      description="Appel du modèle et streaming avec le AI SDK"
     >
       <Chat
         api="/api/01-chat"

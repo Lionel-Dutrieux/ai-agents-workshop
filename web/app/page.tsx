@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DemoDataCard } from "@/components/demo-data";
 import { TechStackDialog } from "@/components/tech-stack-dialog";
 
 const exercises = [
@@ -104,6 +105,31 @@ export default function Home() {
             </Card>
           </Link>
         ))}
+      </section>
+
+      <section className="mt-12 flex flex-col gap-4">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          Préparer l&apos;atelier
+        </h2>
+        <DemoDataCard />
+        <Link className="group" href="/sandbox">
+          <Card className="transition-colors group-hover:border-primary/40 group-hover:bg-muted/50">
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <CardTitle className="flex items-center gap-2">
+                    Sandbox — toutes les données
+                    <ArrowRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Voir et modifier le catalogue, les commandes et les données
+                    de démo qui alimentent les agents.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+        </Link>
       </section>
     </main>
   );

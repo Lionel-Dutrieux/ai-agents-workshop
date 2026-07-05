@@ -30,6 +30,10 @@ export async function resolveLanguageModel(
     baseURL: config.baseUrl,
     // Ollama exige une clé mais l'ignore ; on met une valeur neutre par défaut.
     apiKey: config.apiKey ?? "unused",
+    // Utilise `response_format: json_schema` pour la sortie structurée
+    // (generateObject/streamObject) — attendu par LM Studio, Ollama, Azure.
+    // Sans effet sur le chat (streamText n'envoie pas de response_format).
+    supportsStructuredOutputs: true,
   });
 
   return provider.chatModel(config.modelId);
