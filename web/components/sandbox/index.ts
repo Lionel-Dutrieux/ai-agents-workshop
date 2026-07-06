@@ -1,4 +1,5 @@
 export { BrewlyCatalogManager } from "./brewly-catalog-manager";
+export { BrewlyKnowledgeManager } from "./brewly-knowledge-manager";
 export { BrewlyOrdersManager } from "./brewly-orders-manager";
 export { DataTable, type DataTableProps } from "./data-table";
 export { SandboxCrud, type SandboxCrudProps } from "./sandbox-crud";

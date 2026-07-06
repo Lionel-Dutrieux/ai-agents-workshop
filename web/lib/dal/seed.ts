@@ -1,6 +1,7 @@
 import "server-only";
 
 import { countProducts, resetCatalog } from "./brewly-catalog";
+import { countKnowledge, resetKnowledge } from "./brewly-knowledge";
 import { countOrders, resetOrders } from "./brewly-orders";
 import { countConversations, deleteAllConversations } from "./conversations";
 import { countSandboxItems, resetSandboxItems } from "./sandbox-items";
@@ -23,6 +24,7 @@ import { countSandboxItems, resetSandboxItems } from "./sandbox-items";
 export type SeedStatus = {
   products: number;
   orders: number;
+  knowledge: number;
   sandboxItems: number;
   conversations: number;
 };
@@ -31,18 +33,21 @@ export type SeedStatus = {
 export type SeedResult = {
   products: number;
   orders: number;
+  knowledge: number;
   sandboxItems: number;
   conversationsCleared: number;
 };
 
 export async function getSeedStatus(): Promise<SeedStatus> {
-  const [products, orders, sandboxItems, conversations] = await Promise.all([
-    countProducts(),
-    countOrders(),
-    countSandboxItems(),
-    countConversations(),
-  ]);
-  return { products, orders, sandboxItems, conversations };
+  const [products, orders, knowledge, sandboxItems, conversations] =
+    await Promise.all([
+      countProducts(),
+      countOrders(),
+      countKnowledge(),
+      countSandboxItems(),
+      countConversations(),
+    ]);
+  return { products, orders, knowledge, sandboxItems, conversations };
 }
 
 /**
@@ -50,12 +55,13 @@ export async function getSeedStatus(): Promise<SeedStatus> {
  * de chat. Idempotent : rejouable autant de fois que voulu.
  */
 export async function seedDatabase(): Promise<SeedResult> {
-  const [products, orders, sandboxItems, conversationsCleared] =
+  const [products, orders, knowledge, sandboxItems, conversationsCleared] =
     await Promise.all([
       resetCatalog(),
       resetOrders(),
+      resetKnowledge(),
       resetSandboxItems(),
       deleteAllConversations(),
     ]);
-  return { products, orders, sandboxItems, conversationsCleared };
+  return { products, orders, knowledge, sandboxItems, conversationsCleared };
 }

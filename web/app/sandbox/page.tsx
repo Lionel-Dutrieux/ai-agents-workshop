@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DemoDataCard } from "@/components/demo-data";
 import {
   BrewlyCatalogManager,
+  BrewlyKnowledgeManager,
   BrewlyOrdersManager,
   SandboxItemManager,
 } from "@/components/sandbox";
@@ -15,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { countKnowledge } from "@/lib/dal/brewly-knowledge";
 import { countOrders } from "@/lib/dal/brewly-orders";
 import { countProducts } from "@/lib/dal/brewly-catalog";
 import { countConversations } from "@/lib/dal/conversations";
@@ -30,19 +32,28 @@ import { countSandboxItems } from "@/lib/dal/sandbox-items";
  * modifier toutes les données de démo qui alimentent les agents.
  */
 export default async function SandboxPage() {
-  const [products, orders, sandboxItems, conversations, models, mcpServers] =
-    await Promise.all([
-      countProducts(),
-      countOrders(),
-      countSandboxItems(),
-      countConversations(),
-      listManagedModels(),
-      listManagedMcpServers(),
-    ]);
+  const [
+    products,
+    orders,
+    knowledge,
+    sandboxItems,
+    conversations,
+    models,
+    mcpServers,
+  ] = await Promise.all([
+    countProducts(),
+    countOrders(),
+    countKnowledge(),
+    countSandboxItems(),
+    countConversations(),
+    listManagedModels(),
+    listManagedMcpServers(),
+  ]);
 
   const stats = [
     { label: "Produits", value: products },
     { label: "Commandes", value: orders },
+    { label: "Connaissances", value: knowledge },
     { label: "Sandbox items", value: sandboxItems },
     { label: "Conversations", value: conversations },
     { label: "Modèles LLM", value: models.length },
@@ -74,7 +85,7 @@ export default async function SandboxPage() {
           et 04 le verront <strong>immédiatement</strong>.
         </p>
 
-        <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {stats.map((stat) => (
             <div className="rounded-lg border p-3" key={stat.label}>
               <div className="font-semibold text-2xl tabular-nums">
@@ -106,6 +117,13 @@ export default async function SandboxPage() {
           title="Commandes"
         >
           <BrewlyOrdersManager />
+        </Section>
+
+        <Section
+          description="La base documentaire du futur module RAG : politiques, FAQ, guides, fiches origine — avec quelques pièges volontaires (article obsolète, note interne)."
+          title="Centre de connaissances"
+        >
+          <BrewlyKnowledgeManager />
         </Section>
 
         <Section

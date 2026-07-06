@@ -81,6 +81,13 @@ export function DemoDataCard() {
             produits
           </span>
           <span>
+            Connaissances&nbsp;:{" "}
+            <span className="font-medium text-foreground">
+              {status ? status.knowledge : "…"}
+            </span>{" "}
+            articles
+          </span>
+          <span>
             Sandbox&nbsp;:{" "}
             <span className="font-medium text-foreground">
               {status ? status.sandboxItems : "…"}
@@ -128,7 +135,8 @@ export function DemoDataCard() {
           {result && !pending && (
             <span className="flex items-center gap-1.5 text-emerald-600 text-sm dark:text-emerald-500">
               <CheckIcon className="size-4" />
-              {result.products} produits · {result.sandboxItems} items ·{" "}
+              {result.products} produits · {result.knowledge} articles ·{" "}
+              {result.sandboxItems} items ·{" "}
               {result.conversationsCleared} conversation
               {result.conversationsCleared > 1 ? "s" : ""} effacée
               {result.conversationsCleared > 1 ? "s" : ""}

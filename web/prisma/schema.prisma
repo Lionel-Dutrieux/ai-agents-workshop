@@ -116,6 +116,29 @@ model BrewlyOrder {
   @@index([createdAt])
 }
 
+/// Un article du centre de connaissances Brewly — la base documentaire du
+/// module RAG. Éditable depuis la sandbox ; amorcé par le seeder centralisé.
+/// `tags` est un tableau JSON sérialisé (SQLite n'a pas de type liste).
+model BrewlyKnowledge {
+  id        String   @id @default(cuid())
+  /// Référence lisible (ex. "KB-01"), unique.
+  reference String   @unique
+  titre     String
+  /// "politique" | "faq" | "guide" | "produit" | "interne".
+  categorie String
+  /// Corps de l'article (plusieurs paragraphes — matière à découper en chunks).
+  contenu   String
+  /// Mots-clés, sérialisés en JSON (ex. ["retours", "remboursement"]).
+  tags      String   @default("[]")
+  /// Un article non publié ne doit PAS être servi par le RAG (cas d'école).
+  publie    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([categorie])
+  @@index([publie])
+}
+
 /// Un serveur MCP ajouté dynamiquement (transport HTTP).
 model McpServer {
   id   String @id @default(cuid())
