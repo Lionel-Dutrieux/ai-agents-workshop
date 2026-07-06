@@ -1,0 +1,17 @@
+{
+  "name": "brewly-foundry-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx --env-file=.env run-agent.ts"
+  },
+  "dependencies": {
+    "@azure/ai-projects": "^2.0.0",
+    "@azure/identity": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

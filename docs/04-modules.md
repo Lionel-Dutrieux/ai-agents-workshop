@@ -37,14 +37,21 @@
 - **Exercice starter** : squelette du serveur fourni, tools à implémenter, connexion à l'agent à faire.
 - **Concepts** : protocole MCP, tools vs resources vs prompts, transports (stdio / HTTP), interopérabilité.
 
-## Module 6 — Microsoft Foundry (démo)
+## Module 6 — Garde-fous
 
-- **Objectif** : ouvrir sur l'écosystème "agents managés" côté Azure.
-- **Contenu** : exemple d'agent créé avec le SDK Microsoft Foundry (dossier `foundry/`), comparaison rapide avec l'approche AI SDK (ce que la plateforme gère à votre place : threads, orchestration, outils hébergés).
+- **Objectif** : ajouter la couche de sécurité de l'agent (anti-jailbreak, anti-fuite de secret, injection indirecte).
+- **Contenu** : middleware `wrapLanguageModel` du AI SDK — durcissement et neutralisation en entrée (`transformParams`), redaction en sortie (`wrapGenerate`), défense en profondeur.
+- **Exercice starter** : le détecteur est fourni, le middleware est à écrire et à brancher sur l'agent du module 3.
+- **Concepts** : prompt injection directe/indirecte, guardrails déterministes, middleware composable.
+
+## Module 7 — Microsoft Foundry (démo)
+
+- **Objectif** : ouvrir sur l'écosystème "agents managés" : l'agent devient une ressource cloud, le code ne fait qu'appeler.
+- **Contenu** : agent `brewly-review-analyst` créé dans le portail Foundry (instructions fournies à copier-coller), invoqué en une tâche synchrone par un script JS minimal (`foundry/run-agent.ts`, SDK `@azure/ai-projects` 2.x). Comparaison avec l'approche AI SDK : ce que la plateforme gère à votre place (versions, guardrails, content safety, métriques, playground) — et ce qu'elle ne fournit pas (kit UI).
 - **Format** : démo commentée, code complet fourni — pas d'exercice.
 
 ## Bonus — .NET + Foundry SDK
 
 - **Objectif** : montrer que les mêmes concepts s'appliquent hors TypeScript.
-- **Contenu** : console app .NET minimaliste (dossier `dotnet-foundry/`) reprenant l'exemple du module 6 en C#. Volontairement light.
+- **Contenu** : console app .NET minimaliste (dossier `dotnet-foundry/`) reprenant l'exemple du module 7 en C#. Volontairement light.
 - **Statut** : optionnel, réalisé seulement si le temps de préparation le permet.

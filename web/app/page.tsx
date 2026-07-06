@@ -59,6 +59,14 @@ const exercises = [
       "La couche de sécurité de l'agent : anti-jailbreak, anti-fuite de secret et injection indirecte, via un middleware officiel du SDK.",
     level: "Avancé +",
   },
+  {
+    href: "/07-foundry",
+    number: "07",
+    title: "Microsoft Foundry",
+    description:
+      "L'approche « agent managé » : l'agent vit dans le cloud Foundry (guardrails, métriques, versions inclus), le code ne fait qu'appeler.",
+    level: "Démo",
+  },
 ] as const;
 
 export default function Home() {
