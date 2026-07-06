@@ -109,6 +109,16 @@ export function FoundryTutorial() {
             L&apos;authentification passe par votre identité Azure (
             <code>az login</code>) : aucun secret dans le code ni dans le repo.
           </p>
+          <p>
+            À noter : le Foundry Agent Service{" "}
+            <strong>n&apos;accepte pas de clé API</strong> (réservée à
+            l&apos;inférence de modèle basique) — Entra ID est obligatoire pour
+            les agents. Sans <code>az login</code>, l&apos;alternative est un{" "}
+            <strong>service principal</strong> : trois variables{" "}
+            <code>AZURE_TENANT_ID</code> / <code>CLIENT_ID</code> /{" "}
+            <code>CLIENT_SECRET</code> dans le <code>.env</code>, détectées
+            automatiquement par <code>DefaultAzureCredential</code>.
+          </p>
           <TutorialCode
             code={CLIENT}
             filename="foundry/run-agent.ts"
