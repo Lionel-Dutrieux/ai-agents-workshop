@@ -29,7 +29,7 @@ export const getOrderStatus = tool({
 
   // 3. Votre code, exécuté côté serveur. Il délègue au DAL.
   execute: async ({ numeroCommande }) => {
-    const order = getOrder(numeroCommande); // ← DAL fourni
+    const order = await getOrder(numeroCommande); // ← DAL fourni
     return order ?? { trouvee: false };
   },
 });`;

@@ -51,6 +51,14 @@ const exercises = [
       "Exposer les capacités de la boutique via le Model Context Protocol et les brancher sur n'importe quel client.",
     level: "Avancé",
   },
+  {
+    href: "/06-guardrails",
+    number: "06",
+    title: "Garde-fous",
+    description:
+      "La couche de sécurité de l'agent : anti-jailbreak, anti-fuite de secret et injection indirecte, via un middleware officiel du SDK.",
+    level: "Avancé +",
+  },
 ] as const;
 
 export default function Home() {

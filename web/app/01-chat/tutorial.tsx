@@ -84,7 +84,7 @@ export function Chat01Tutorial() {
       <Callout title="Objectif" variant="objective">
         Implémenter la route <code>/api/01-chat</code> : elle appelle un modèle
         et diffuse sa réponse en streaming. L’UI (le chat à droite) est déjà
-        fournie — tu n’écris que le backend.
+        fournie — vous n’écrivez que le backend.
       </Callout>
 
       <Callout title="Juste un appel au modèle — pas encore d’agent" variant="note">
@@ -99,7 +99,7 @@ export function Chat01Tutorial() {
       <TutorialSteps>
         <TutorialStep title="Créer la route">
           <p>
-            Crée le fichier ci-dessous. Une route <code>POST</code> reçoit les
+            Créez le fichier ci-dessous. Une route <code>POST</code> reçoit les
             messages de la conversation et l’id du modèle sélectionné dans l’UI.
           </p>
           <TutorialCode
@@ -129,9 +129,9 @@ export function Chat01Tutorial() {
 
         <TutorialStep title="Tester">
           <p>
-            Ajoute un modèle local via le bouton <strong>« Modèles »</strong>{" "}
+            Ajoutez un modèle local via le bouton <strong>« Modèles »</strong>{" "}
             (LM Studio par défaut : <code>http://localhost:1234/v1</code>), puis
-            pose une question dans le chat, par exemple :
+            posez une question dans le chat, par exemple :
           </p>
           <p className="text-foreground">
             « Quels cafés conseillez-vous pour un espresso corsé ? »
@@ -144,7 +144,7 @@ export function Chat01Tutorial() {
         (<code>streamText</code>) marche avec OpenAI, Anthropic, Google… ou tout
         endpoint <strong>OpenAI-compatible</strong>. Ici la tuyauterie est déjà
         prête : <code>resolveLanguageModel(model)</code> instancie le modèle
-        choisi via <code>@ai-sdk/openai-compatible</code> — tu branches LM
+        choisi via <code>@ai-sdk/openai-compatible</code> — vous branchez LM
         Studio, Ollama ou Azure AI Foundry depuis « Modèles », sans toucher au
         code de la route.
       </Callout>
@@ -158,7 +158,7 @@ export function Chat01Tutorial() {
       </TutorialSolution>
 
       <Callout title="La limite (voulue) de ce module" variant="warning">
-        Demande-lui « où en est ma commande #1042 ? » : il ne sait pas. Le
+        Demandez-lui « où en est ma commande #1042 ? » : il ne sait pas. Le
         chatbot ne connaît pas encore les données de la boutique — on lui
         donnera des <em>outils</em> au module 3.
       </Callout>

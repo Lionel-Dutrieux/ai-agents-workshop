@@ -156,8 +156,8 @@ export function StructuredOutputTutorial() {
 
         <TutorialStep title="Tester les deux modes">
           <p>
-            Choisis un modèle, clique un email d’exemple, puis{" "}
-            <strong>Analyser</strong>. Bascule entre{" "}
+            Choisissez un modèle, cliquez un email d’exemple, puis{" "}
+            <strong>Analyser</strong>. Basculez entre{" "}
             <strong>Streaming</strong> et <strong>One-shot</strong> pour{" "}
             <em>sentir</em> la différence : les champs qui se remplissent un à un
             vs. le ticket qui apparaît d’un bloc.
@@ -168,7 +168,7 @@ export function StructuredOutputTutorial() {
       <TutorialSection title="streamObject ou generateObject ?">
         <p>
           Deux fonctions, même schéma, même résultat typé. La seule différence
-          est <strong>quand</strong> tu reçois l’objet.
+          est <strong>quand</strong> vous recevez l’objet.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <CompareCard
@@ -202,8 +202,8 @@ export function StructuredOutputTutorial() {
           Un LLM peut renvoyer du JSON invalide ou incomplet. Le SDK{" "}
           <strong>valide la sortie contre le schéma</strong> : si ça ne passe
           pas, <code>generateObject</code> lève{" "}
-          <code>NoObjectGeneratedError</code> (plutôt que de te refiler un objet
-          à moitié faux). Tu récupères <code>error.text</code> (ce que le modèle
+          <code>NoObjectGeneratedError</code> (plutôt que de vous refiler un objet
+          à moitié faux). Vous récupérez <code>error.text</code> (ce que le modèle
           a vraiment dit) et <code>error.cause</code> pour logguer et gérer le
           cas proprement.
         </p>
