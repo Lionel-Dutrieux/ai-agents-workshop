@@ -4,6 +4,13 @@ Workshop pratique (3h) : construire des agents IA avec le **AI SDK (Vercel)**, *
 
 > 🚧 Repo en cours de construction. La planification détaillée se trouve dans le dossier [`docs/`](docs/).
 
+## Les exercices
+
+Les fiches de chaque module (objectif, concepts, étapes avec les blocs de
+code à copier-coller, comment tester) sont dans [`exercices/`](exercices/) —
+lisibles sans lancer l'application. Commencez par
+[`exercices/README.md`](exercices/README.md).
+
 ## Branches
 
 | Branche | Contenu |
