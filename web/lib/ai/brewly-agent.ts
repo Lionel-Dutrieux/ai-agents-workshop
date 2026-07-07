@@ -1,7 +1,9 @@
 import "server-only";
 
-import { type LanguageModel, stepCountIs, ToolLoopAgent } from "ai";
-import { brewlyTools } from "@/app/api/03-tools/tools";
+import { type LanguageModel, ToolLoopAgent } from "ai";
+// Décommentez ces imports à l'Étape 1 (exercices/04-agent.md) :
+// import { stepCountIs } from "ai";
+// import { brewlyTools } from "@/app/api/03-tools/tools";
 
 /**
  * L'agent Brewly, encapsulé (Module 4).
@@ -30,13 +32,14 @@ Réponds en français, de façon chaleureuse et concise, une fois toutes les inf
  * du module) parce que le modèle est choisi dynamiquement par l'utilisateur et
  * résolu depuis la base à chaque requête.
  */
-export function createBrewlyAgent(model: LanguageModel) {
-  return new ToolLoopAgent({
-    model,
-    instructions: BREWLY_AGENT_INSTRUCTIONS,
-    tools: brewlyTools,
-    // Garde-fou : jusqu'à 8 étapes pour laisser l'agent enchaîner plusieurs
-    // outils sur une tâche composée, sans risque de boucle infinie.
-    stopWhen: stepCountIs(8),
-  });
+export function createBrewlyAgent(model: LanguageModel): ToolLoopAgent {
+  // ⚠️ À VOUS — Étape 1 (exercices/04-agent.md)
+  // Renvoyez un `new ToolLoopAgent({ ... })` configuré avec le modèle, les
+  // instructions (`BREWLY_AGENT_INSTRUCTIONS`), les outils du module 3
+  // (`brewlyTools`, réutilisés tels quels), et un `stopWhen: stepCountIs(N)`
+  // pour borner le nombre d'étapes de la boucle.
+  void model;
+  throw new Error(
+    "⚠️ Agent à construire — suivez exercices/04-agent.md (Étape 1)"
+  );
 }
