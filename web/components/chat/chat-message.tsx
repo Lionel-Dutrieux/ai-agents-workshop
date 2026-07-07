@@ -18,6 +18,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
+import type { RagSource } from "./types";
 
 export type ChatMessageProps = {
   message: UIMessage;
@@ -70,6 +71,27 @@ export function ChatMessage({
                   <ToolOutput output={part.output} errorText={part.errorText} />
                 </ToolContent>
               </Tool>
+            );
+          }
+
+          if (part.type === "data-rag-sources") {
+            const sources = part.data as RagSource[];
+            return (
+              <div
+                className="flex flex-wrap items-center gap-1.5 text-muted-foreground text-xs"
+                key={`${message.id}-${i}`}
+              >
+                <span className="font-medium">Sources :</span>
+                {sources.map((source) => (
+                  <span
+                    className="rounded-md border bg-muted/50 px-1.5 py-0.5 font-mono"
+                    key={source.reference}
+                    title={source.titre}
+                  >
+                    {source.reference} · {Math.round(source.score * 100)} %
+                  </span>
+                ))}
+              </div>
             );
           }
 
