@@ -1,14 +1,15 @@
-import {
-  convertToModelMessages,
-  createUIMessageStreamResponse,
-  streamText,
-  toUIMessageStream,
-} from "ai";
+// Décommentez ces imports au fil des étapes :
+// import {
+//   convertToModelMessages,
+//   createUIMessageStreamResponse,
+//   streamText,
+//   toUIMessageStream,
+// } from "ai";
 import type { ChatUIMessage } from "@/components/chat/types";
-import { resolveLanguageModel } from "@/lib/ai/models";
+// import { resolveLanguageModel } from "@/lib/ai/models";
 
 /**
- * Module 1 — Premier chat (solution de référence).
+ * Module 1 — Premier chat (à compléter — voir exercices/01-chat.md).
  *
  * Cycle : requête (messages + modèle choisi) → LLM → streaming vers l'UI.
  * L'UI (le composant <Chat/>) est déjà fournie ; seule cette route est à écrire.
@@ -42,26 +43,20 @@ export async function POST(req: Request) {
   const { messages, model }: { messages: ChatUIMessage[]; model: string } =
     await req.json();
 
-  // Résout le modèle (LM Studio, Ollama, Azure…) depuis la base.
-  const languageModel = await resolveLanguageModel(model);
+  // ⚠️ À VOUS — Étape 1 (exercices/01-chat.md)
+  // Résolvez le modèle choisi dans l'UI (`model`) en instance utilisable par
+  // le AI SDK, avec `resolveLanguageModel(model)`.
 
-  const result = streamText({
-    model: languageModel,
-    // AI SDK 7 : `instructions` remplace `system` (déprécié).
-    instructions: BREWLY_SYSTEM_PROMPT,
-    messages: await convertToModelMessages(messages),
-  });
+  // ⚠️ À VOUS — Étape 2 (exercices/01-chat.md)
+  // Appelez `streamText` avec le modèle résolu, le system prompt
+  // (`BREWLY_SYSTEM_PROMPT`) et les messages convertis avec
+  // `convertToModelMessages(messages)`.
 
-  // Diffuse la réponse au format UIMessage, en joignant l'usage de tokens
-  // (pour la jauge de contexte) et l'id du modèle à la fin.
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({
-      stream: result.stream,
-      messageMetadata: ({ part }) => {
-        if (part.type === "finish") {
-          return { usage: part.totalUsage, modelId: model };
-        }
-      },
-    }),
-  });
+  // ⚠️ À VOUS — Étape 3 (exercices/01-chat.md)
+  // Renvoyez le flux au format `UIMessage` attendu par le composant <Chat/>,
+  // avec `createUIMessageStreamResponse` + `toUIMessageStream`.
+  return new Response(
+    "Module 01 à implémenter — suivez exercices/01-chat.md",
+    { status: 501 }
+  );
 }
