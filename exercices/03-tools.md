@@ -18,6 +18,13 @@ catalogue Brewly avant de répondre, au lieu d'inventer une réponse.
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 Chaque étape correspond EXACTEMENT à un trou `⚠️ À VOUS` de la branche main,
 dans `web/app/api/03-tools/tools.ts`. Le premier outil (`getOrderStatus`) est
 déjà fourni comme exemple — inspirez-vous-en.

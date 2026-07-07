@@ -1,6 +1,6 @@
 # Module 02 — Structured output
 
-> **Durée** : ~20 min · **Fichier à modifier** : `web/app/api/02-structured-output/route.ts` · **Niveau** : facile
+> **Durée** : ~20 min · **Fichiers à modifier** : `web/app/02-structured-output/schema.ts` et `web/app/api/02-structured-output/route.ts` · **Niveau** : facile
 
 ## 🎯 Objectif
 
@@ -15,6 +15,13 @@ Faire produire au modèle du JSON typé et fiable plutôt que du texte libre : t
 - **Une seule source de vérité** : le même schéma zod sert côté serveur (`streamObject`) et côté client (`useObject`).
 
 ## 📝 Étapes
+
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
 
 ### Étape 1 — Écrire le schéma du ticket
 
