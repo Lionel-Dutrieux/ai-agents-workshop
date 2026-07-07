@@ -244,9 +244,10 @@ export function RagTutorial() {
 
       <Callout title="Objectif" variant="objective">
         La recherche naïve par mots-clés (<code>searchKnowledge</code>) ne
-        trouve rien pour <em>« je veux renvoyer ma machine »</em> alors que la
-        politique de retours existe bel et bien dans la base — parce
-        qu&apos;aucun mot ne correspond littéralement. La recherche{" "}
+        trouve rien pour <em>« comment me faire rembourser ? »</em> alors que
+        la politique de retours et remboursements existe bel et bien dans la
+        base — parce qu&apos;aucun mot ne correspond littéralement. La
+        recherche{" "}
         <strong>sémantique</strong> compare le <strong>sens</strong>, pas les
         mots : c&apos;est ce que vous allez construire.
       </Callout>

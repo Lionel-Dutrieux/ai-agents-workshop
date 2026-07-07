@@ -15,7 +15,7 @@ export default function Page() {
         emptyStateDescription="L'assistant répond depuis la base de connaissances Brewly (20 articles) et cite ses sources. Indexez la base depuis le panneau de gauche, puis posez une question."
         emptyStateTitle="Assistant Brewly (RAG)"
         suggestions={[
-          "Je veux renvoyer ma machine, comment faire ?",
+          "Comment me faire rembourser ?",
           "Mon café est trop amer en V60, un conseil ?",
           "Quel est le délai pour retourner un article ?",
         ]}

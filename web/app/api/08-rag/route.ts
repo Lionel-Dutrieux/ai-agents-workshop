@@ -82,10 +82,23 @@ export async function POST(req: Request) {
   const stream = createUIMessageStream<ChatUIMessage>({
     execute: async ({ writer }) => {
       // Les sources d'abord : l'UI les affiche pendant que la réponse streame.
+      // `retrieve` renvoie souvent plusieurs chunks d'un même article (c'est
+      // voulu pour le contexte du LLM ci-dessous), mais côté UI cela produirait
+      // des badges dupliqués et une collision de key React (chat-message.tsx
+      // utilise `key={source.reference}`). On déduplique par référence en
+      // gardant la première occurrence : les sources sont déjà triées par
+      // score décroissant, donc c'est aussi le meilleur score.
+      const seenReferences = new Set<string>();
+      const dedupedSources = sources.filter(({ reference }) => {
+        if (seenReferences.has(reference)) return false;
+        seenReferences.add(reference);
+        return true;
+      });
+
       writer.write({
         type: "data-rag-sources",
         id: "rag-sources",
-        data: sources.map(({ reference, titre, score }) => ({
+        data: dedupedSources.map(({ reference, titre, score }) => ({
           reference,
           titre,
           score,
