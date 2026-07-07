@@ -36,13 +36,16 @@ export type IndexStats = {
 export async function replaceEmbeddings(
   chunks: EmbeddedChunk[]
 ): Promise<number> {
-  await prisma.brewlyEmbedding.deleteMany();
-  await prisma.brewlyEmbedding.createMany({
-    data: chunks.map((chunk) => ({
-      ...chunk,
-      vecteur: JSON.stringify(chunk.vecteur),
-    })),
-  });
+  // Transaction : jamais d'index à moitié vide si l'insertion échoue.
+  await prisma.$transaction([
+    prisma.brewlyEmbedding.deleteMany(),
+    prisma.brewlyEmbedding.createMany({
+      data: chunks.map((chunk) => ({
+        ...chunk,
+        vecteur: JSON.stringify(chunk.vecteur),
+      })),
+    }),
+  ]);
   return chunks.length;
 }
 

@@ -49,6 +49,10 @@ export async function POST(req: Request) {
     .join(" ")
     .trim();
 
+  if (!question) {
+    return new Response("Question vide : rien à rechercher.", { status: 400 });
+  }
+
   // ÉTAPE RETRIEVE — avant tout appel au LLM.
   let sources: Awaited<ReturnType<typeof retrieve>>;
   try {
