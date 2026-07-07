@@ -67,6 +67,14 @@ const exercises = [
       "L'approche « agent managé » : l'agent vit dans le cloud Foundry (guardrails, métriques, versions inclus), le code ne fait qu'appeler.",
     level: "Démo",
   },
+  {
+    href: "/08-rag",
+    number: "08",
+    title: "RAG custom",
+    description:
+      "Recherche sémantique de A à Z sur la base de connaissances : chunking, embeddings locaux (LM Studio), similarité cosinus et réponses sourcées.",
+    level: "Avancé ++",
+  },
 ] as const;
 
 export default function Home() {
