@@ -34,10 +34,14 @@ pas « retours » — la recherche sémantique, si.
   mentionne que le SDK exporte un helper `cosineSimilarity` — l'écrire
   soi-même est le but pédagogique.
 - **Démo « échec puis fix »** : l'indexation propose une option « inclure les
-  non-publiés ». Index naïf → « quel est le délai de retour ? » → le RAG cite
-  KB-20 et répond 14 jours. Fix : réindexer en filtrant `publie: true` →
-  30 jours (KB-01). KB-19 (note interne) traité en encart tutoriel
-  (périmètre/confidentialité du corpus), sans exercice dédié.
+  non-publiés ». Index naïf → « quel est le délai de retour ? » → KB-20
+  (14 jours) fuit dans les sources aux côtés de KB-01 ; selon le modèle, la
+  réponse devient fausse ou hésite. (Constaté en vérif : un modèle attentif
+  peut trancher pour KB-01, car KB-20 s'auto-déclare archivé — le signal
+  garanti de la démo est la fuite dans les sources.) Fix : réindexer en
+  filtrant `publie: true` → 30 jours (KB-01), KB-20 disparaît. KB-19 (note
+  interne) traité en encart tutoriel (périmètre/confidentialité du corpus),
+  sans exercice dédié.
 - **Indexation** : déclenchée depuis l'UI du module (panneau Index), pas de
   script CLI. Réindexer = vider puis réinsérer (idempotent, même pattern que
   le seed).

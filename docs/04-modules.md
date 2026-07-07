@@ -53,7 +53,7 @@
 ## Module 8 — RAG custom
 
 - **Objectif** : construire une recherche sémantique de A à Z et comprendre chaque étape d'un RAG — sans boîte noire.
-- **Contenu** : indexation de la base de connaissances Brewly (20 articles) — chunking par paragraphe, `embedMany` vers un modèle d'embeddings local (LM Studio), stockage SQLite — puis interrogation : `embed` de la question, similarité cosinus en TypeScript, top-K injecté dans le prompt, réponse sourcée (références KB-xx). Démo « échec puis fix » : l'index naïf avale l'article obsolète KB-20 et répond 14 jours au lieu de 30 ; le filtre `publie` corrige.
+- **Contenu** : indexation de la base de connaissances Brewly (20 articles) — chunking par paragraphe, `embedMany` vers un modèle d'embeddings local (LM Studio), stockage SQLite — puis interrogation : `embed` de la question, similarité cosinus en TypeScript, top-K injecté dans le prompt, réponse sourcée (références KB-xx). Démo « échec puis fix » : l'index naïf avale l'article obsolète KB-20 (14 jours au lieu de 30), qui fuit dans les sources et peut fausser la réponse selon le modèle ; le filtre `publie` corrige.
 - **Exercice starter** : le chunking et le squelette sont fournis ; les appels `embed`/`embedMany` et la similarité cosinus + top-K sont à écrire.
 - **Concepts** : embeddings, chunking, similarité cosinus, pipeline d'ingestion vs interrogation, qualité et périmètre du corpus, bases vectorielles en production (pgvector…).
 
