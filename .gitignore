@@ -13,7 +13,7 @@ web/lib/generated/
 *.db-wal
 
 # Env
-.env
+# .env est versionné (aucun secret) ; seuls les .local restent ignorés
 .env*.local
 
 # .NET

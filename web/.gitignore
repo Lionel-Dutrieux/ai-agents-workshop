@@ -30,9 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.example
+# env : .env est versionné (aucun secret — voir le commentaire dans le fichier) ;
+# seules les variantes locales restent ignorées.
+.env*.local
 
 # sqlite — dev.db EST versionnée (base prête à l'emploi, données seedées),
 # seuls les fichiers de journal restent ignorés.
