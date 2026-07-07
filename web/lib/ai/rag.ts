@@ -1,6 +1,6 @@
 import "server-only";
 
-import { embed, embedMany } from "ai";
+import { cosineSimilarity, embed, embedMany } from "ai";
 import {
   type EmbeddedChunk,
   listEmbeddings,
@@ -15,10 +15,11 @@ import { resolveEmbeddingModel, toEmbeddingsError } from "./embeddings";
  * Indexation : articles → chunks (1 paragraphe) → `embedMany` → SQLite.
  * Interrogation : question → `embed` → similarité cosinus → top-K.
  *
- * ⚠️ Atelier : `cosineSimilarity`, `topK` et les appels `embed`/`embedMany`
- * sont les parties que vous écrivez pendant l'exercice. Le AI SDK exporte
- * d'ailleurs son propre `cosineSimilarity` — l'écrire soi-même une fois est
- * le meilleur moyen de comprendre ce que « proche sémantiquement » veut dire.
+ * ⚠️ Atelier : `topK` et les appels `embed`/`embedMany` sont les parties que
+ * vous écrivez pendant l'exercice. La similarité cosinus, elle, vient
+ * directement du AI SDK (`cosineSimilarity`) : inutile de réécrire la
+ * formule, l'important est de comprendre ce qu'elle mesure — 1 = même
+ * direction (très proche), 0 = orthogonal (sans rapport).
  */
 
 /** Un extrait retrouvé par la recherche sémantique, avec son score [−1, 1]. */
@@ -42,32 +43,9 @@ export function chunkArticle(contenu: string): string[] {
 }
 
 /**
- * ⚠️ Atelier — à écrire : similarité cosinus entre deux vecteurs.
- * cos(a, b) = (a · b) / (‖a‖ × ‖b‖) — 1 = même direction (très proche),
- * 0 = orthogonal (sans rapport).
- */
-export function cosineSimilarity(a: number[], b: number[]): number {
-  if (a.length !== b.length) {
-    throw new Error(
-      "Dimensions incompatibles : l'index a probablement été construit avec " +
-        "un autre modèle d'embeddings. Videz l'index puis réindexez."
-    );
-  }
-  let dot = 0;
-  let normA = 0;
-  let normB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-  const denominator = Math.sqrt(normA) * Math.sqrt(normB);
-  return denominator === 0 ? 0 : dot / denominator;
-}
-
-/**
  * ⚠️ Atelier — à écrire : score chaque chunk de l'index contre le vecteur
- * de la question, trie par similarité décroissante et garde les k meilleurs.
+ * de la question avec `cosineSimilarity` (fourni par le AI SDK), trie par
+ * similarité décroissante et garde les k meilleurs.
  */
 export function topK(
   question: number[],
@@ -155,5 +133,14 @@ export async function retrieve(
     throw toEmbeddingsError(error);
   }
 
-  return topK(embedding, index, k);
+  try {
+    return topK(embedding, index, k);
+  } catch {
+    // `cosineSimilarity` du SDK refuse deux vecteurs de tailles différentes :
+    // l'index a été construit avec un autre modèle d'embeddings.
+    throw new Error(
+      "Dimensions incompatibles : l'index a probablement été construit avec " +
+        "un autre modèle d'embeddings. Videz l'index puis réindexez."
+    );
+  }
 }

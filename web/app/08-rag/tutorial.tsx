@@ -11,6 +11,7 @@ import {
   TutorialSteps,
 } from "@/components/tutorial";
 import { RagIndexPanel } from "./index-panel";
+import { RagSearchPanel } from "./search-panel";
 
 const CHUNK = `// lib/ai/rag.ts — un paragraphe = un chunk (FOURNI)
 export function chunkArticle(contenu: string): string[] {
@@ -45,18 +46,9 @@ return replaceEmbeddings(
   }))
 );`;
 
-const COSINE = `// lib/ai/rag.ts — similarité cosinus + top-K
+const COSINE = `// lib/ai/rag.ts — scorer et trier : la similarité vient du AI SDK
+import { cosineSimilarity } from "ai";
 // cos(a, b) = (a · b) / (‖a‖ × ‖b‖) — 1 = même direction, 0 = sans rapport.
-export function cosineSimilarity(a: number[], b: number[]): number {
-  let dot = 0, normA = 0, normB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-  const denominator = Math.sqrt(normA) * Math.sqrt(normB);
-  return denominator === 0 ? 0 : dot / denominator;
-}
 
 export function topK(question: number[], index: EmbeddedChunk[], k: number) {
   return index
@@ -109,7 +101,7 @@ writer.write({
 
 const FULL_SOLUTION = `import "server-only";
 
-import { embed, embedMany } from "ai";
+import { cosineSimilarity, embed, embedMany } from "ai";
 import {
   type EmbeddedChunk,
   listEmbeddings,
@@ -133,27 +125,7 @@ export function chunkArticle(contenu: string): string[] {
     .filter((paragraph) => paragraph.length > 0);
 }
 
-/** Similarité cosinus entre deux vecteurs. */
-export function cosineSimilarity(a: number[], b: number[]): number {
-  if (a.length !== b.length) {
-    throw new Error(
-      "Dimensions incompatibles : l'index a probablement été construit avec " +
-        "un autre modèle d'embeddings. Videz l'index puis réindexez."
-    );
-  }
-  let dot = 0;
-  let normA = 0;
-  let normB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-  const denominator = Math.sqrt(normA) * Math.sqrt(normB);
-  return denominator === 0 ? 0 : dot / denominator;
-}
-
-/** Score chaque chunk de l'index contre le vecteur de la question, trie et garde les k meilleurs. */
+/** Score chaque chunk de l'index (cosineSimilarity du SDK), trie et garde les k meilleurs. */
 export function topK(
   question: number[],
   index: EmbeddedChunk[],
@@ -229,7 +201,16 @@ export async function retrieve(
     throw toEmbeddingsError(error);
   }
 
-  return topK(embedding, index, k);
+  try {
+    return topK(embedding, index, k);
+  } catch {
+    // \`cosineSimilarity\` du SDK refuse deux vecteurs de tailles différentes :
+    // l'index a été construit avec un autre modèle d'embeddings.
+    throw new Error(
+      "Dimensions incompatibles : l'index a probablement été construit avec " +
+        "un autre modèle d'embeddings. Videz l'index puis réindexez."
+    );
+  }
 }`;
 
 /** Énoncé du Module 8 — RAG custom. */
@@ -273,6 +254,20 @@ export function RagTutorial() {
         </div>
       </TutorialSection>
 
+      <TutorialSection title="Tester la recherche (sans LLM)">
+        <p>
+          Avant de brancher un modèle de langage, regardez la recherche
+          vectorielle fonctionner <strong>à nu</strong> : votre requête est
+          vectorisée, comparée à chaque chunk par similarité cosinus, et les
+          1 à 3 articles les plus proches remontent avec leur score. Essayez{" "}
+          <em>« comment me faire rembourser ? »</em> — aucun mot ne matche,
+          le sens si.
+        </p>
+        <div className="rounded-lg border bg-card/40 p-3">
+          <RagSearchPanel />
+        </div>
+      </TutorialSection>
+
       <TutorialSteps>
         <TutorialStep title="Chunker les articles">
           <p>
@@ -297,14 +292,14 @@ export function RagTutorial() {
           <TutorialCode code={EMBED_MANY} filename="lib/ai/rag.ts" language="ts" />
         </TutorialStep>
 
-        <TutorialStep title="Écrire la similarité cosinus">
+        <TutorialStep title="Scorer avec cosineSimilarity et garder le top-K">
           <p>
-            Le AI SDK exporte d&apos;ailleurs son propre{" "}
-            <code>cosineSimilarity</code> — l&apos;écrire une fois soi-même est
-            l&apos;exercice, pour comprendre ce que « proche sémantiquement »
-            veut vraiment dire : l&apos;angle entre deux vecteurs. <code>topK</code>{" "}
-            trie ensuite tous les chunks de l&apos;index par score décroissant
-            et garde les meilleurs.
+            La similarité cosinus mesure l&apos;<strong>angle</strong> entre
+            deux vecteurs : 1 = même direction (très proche), 0 = sans
+            rapport. Inutile de réécrire la formule : le AI SDK l&apos;exporte
+            (<code>cosineSimilarity</code>). Ce que vous écrivez, c&apos;est{" "}
+            <code>topK</code> : scorer chaque chunk de l&apos;index contre la
+            question, trier par score décroissant, garder les k meilleurs.
           </p>
           <TutorialCode code={COSINE} filename="lib/ai/rag.ts" language="ts" />
         </TutorialStep>

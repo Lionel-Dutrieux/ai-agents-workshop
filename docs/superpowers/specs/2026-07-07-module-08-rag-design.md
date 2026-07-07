@@ -29,10 +29,13 @@ pas « retours » — la recherche sémantique, si.
 - **Chunking** : par paragraphe (split sur `\n\n`), ~3 chunks par article,
   ~60 chunks au total.
 - **Parties à écrire par les participants** (starter) : les appels
-  `embed`/`embedMany` du AI SDK, la fonction `cosineSimilarity` et la
-  sélection top-K. Le chunking et l'injection du contexte sont fournis. On
-  mentionne que le SDK exporte un helper `cosineSimilarity` — l'écrire
-  soi-même est le but pédagogique.
+  `embed`/`embedMany` du AI SDK et la sélection top-K, en utilisant le
+  helper `cosineSimilarity` exporté par le SDK (décision révisée : on ne
+  réécrit pas la formule, on explique ce qu'elle mesure). Le chunking et
+  l'injection du contexte sont fournis.
+- **Recherche à nu** (ajout) : un mini moteur de recherche vectoriel dans le
+  panneau du module (`/api/08-rag/search`, sans LLM) montre le retrieval
+  seul — requête → embed → cosinus → 1 à 3 articles avec score et extrait.
 - **Démo « échec puis fix »** : l'indexation propose une option « inclure les
   non-publiés ». Index naïf → « quel est le délai de retour ? » → KB-20
   (14 jours) fuit dans les sources aux côtés de KB-01 ; selon le modèle, la
