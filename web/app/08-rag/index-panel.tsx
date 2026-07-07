@@ -23,29 +23,27 @@ export function RagIndexPanel() {
 
   const refresh = useCallback(async () => {
     const res = await fetch("/api/08-rag/index");
+    if (!res.ok) {
+      setError("Impossible de lire l'état de l'index.");
+      return;
+    }
     const body = await res.json();
     setStats(body.stats);
     setModelId(body.modelId);
   }, []);
 
+  // Le panneau vit toute la durée de la page (pas de démontage en
+  // pratique) : pas besoin de garde de démontage ici.
   useEffect(() => {
-    let isMounted = true;
-
     const loadStats = async () => {
       try {
         await refresh();
       } catch {
-        if (isMounted) {
-          setError("Impossible de lire l'état de l'index.");
-        }
+        setError("Impossible de lire l'état de l'index.");
       }
     };
 
     loadStats();
-
-    return () => {
-      isMounted = false;
-    };
   }, [refresh]);
 
   const runIndex = async () => {
@@ -73,6 +71,10 @@ export function RagIndexPanel() {
     setError(null);
     try {
       const res = await fetch("/api/08-rag/index", { method: "DELETE" });
+      if (!res.ok) {
+        setError("Impossible de vider l'index.");
+        return;
+      }
       const body = await res.json();
       setStats(body.stats);
     } finally {
