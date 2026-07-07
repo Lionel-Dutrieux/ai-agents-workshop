@@ -48,6 +48,12 @@ export const ticketSchema = z.object({
 });
 ```
 
+Une fois le schéma en place, remplacez tout le bloc `export type Ticket = { … }` (plus bas dans le même fichier) par cette seule ligne — le type est alors **dérivé** du schéma, une seule source de vérité :
+
+```ts
+export type Ticket = z.infer<typeof ticketSchema>;
+```
+
 ### Étape 2 — Brancher `streamObject` et `generateObject` dans la route
 
 `streamObject` prend le modèle, le schéma et l'email, puis diffuse l'objet au fur et à mesure de sa génération. `toTextStreamResponse()` renvoie ce flux au client, qui le consomme avec le hook `useObject`. La route gère aussi un mode « one-shot » avec `generateObject`, qui attend l'objet complet avant de le renvoyer, et intercepte `NoObjectGeneratedError` si le modèle échoue à produire un objet conforme au schéma.

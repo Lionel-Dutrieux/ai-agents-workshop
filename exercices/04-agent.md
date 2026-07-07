@@ -42,6 +42,8 @@ Dans `app/api/04-agent/route.ts`, la route construit l'agent avec le modèle ré
 
 ```ts
 // web/app/api/04-agent/route.ts
+const languageModel = await resolveLanguageModel(model);
+
 const agent = createBrewlyAgent(languageModel);
 
 const result = await agent.stream({
