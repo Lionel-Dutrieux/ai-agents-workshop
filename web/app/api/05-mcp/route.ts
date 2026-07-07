@@ -11,7 +11,6 @@ import type { ChatUIMessage } from "@/components/chat/types";
 import { BREWLY_AGENT_INSTRUCTIONS } from "@/lib/ai/brewly-agent";
 import { resolveLanguageModel } from "@/lib/ai/models";
 import {
-  countMcpServers,
   getEnabledMcpServers,
   type McpServerConfig,
 } from "@/lib/dal/mcp-servers";
@@ -36,15 +35,13 @@ export async function POST(req: Request) {
   const languageModel = await resolveLanguageModel(model);
   const origin = new URL(req.url).origin;
 
-  // On lit la config : serveurs activés + total. Si rien n'a jamais été
-  // configuré, on cible le serveur intégré ; sinon on respecte STRICTEMENT les
-  // toggles (un serveur désactivé n'est pas dans `getEnabledMcpServers`).
-  const [enabled, total] = await Promise.all([
-    getEnabledMcpServers(),
-    countMcpServers(),
-  ]);
+  // On lit la config : les serveurs ACTIVÉS (bouton « MCP » du chat). Si aucun
+  // serveur n'est activé — rien de configuré, ou tout désactivé — on se rabat
+  // sur le serveur Brewly intégré (`/api/mcp`) : un agent sans AUCUN outil ne
+  // peut pas tool-caller, il « invente » des appels en texte libre.
+  const enabled = await getEnabledMcpServers();
   const targets: McpServerConfig[] =
-    total === 0
+    enabled.length === 0
       ? [{ name: "brewly (intégré)", url: `${origin}/api/mcp`, headers: {} }]
       : enabled;
 
@@ -62,6 +59,14 @@ export async function POST(req: Request) {
     } catch (error) {
       console.error(`[05-mcp] connexion MCP échouée (${target.name}) :`, error);
     }
+  }
+
+  // Garde-fou de diagnostic : si on arrive ici SANS outil (tous les serveurs
+  // injoignables), le modèle répondra en texte libre — mieux vaut le voir venir.
+  if (Object.keys(tools).length === 0) {
+    console.warn(
+      "[05-mcp] aucun outil MCP disponible : l'agent répondra sans tool calling."
+    );
   }
 
   // On referme toutes les connexions MCP une fois la génération terminée.
