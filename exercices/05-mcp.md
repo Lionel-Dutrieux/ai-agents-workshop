@@ -16,9 +16,18 @@ Aux modules 3 et 4, les outils de Brewly étaient **privés** : importés dans l
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 Chaque étape correspond EXACTEMENT à un trou `⚠️ À VOUS` de la branche main,
 dans `web/lib/mcp/brewly-mcp-server.ts`. Le serveur et son premier outil
-(`getOrderStatus`) sont déjà fournis — inspirez-vous-en.
+(`getOrderStatus`) sont déjà fournis — inspirez-vous-en. Les deux blocs
+(Étapes 1 et 2) s'insèrent l'un après l'autre, **avant** le `return server;`
+final de la fonction `createBrewlyMcpServer`.
 
 ### Étape 1 — Écrire l'outil `getProductInfo`
 
@@ -109,6 +118,7 @@ qu'aux modules 3 et 4) sont déjà complets — vous n'avez rien à y changer.
   - `inputSchema` en erreur au démarrage → c'est un **raw shape** zod (`{ nom: z.string() }`), pas un `z.object({ ... })` comme au module 3.
   - Le modèle appelle l'outil mais ne répond jamais ensuite → ce n'est pas un trou de ce module (la boucle `stopWhen` est déjà correcte dans `app/api/05-mcp/route.ts`) ; vérifiez plutôt le modèle utilisé.
   - Avec un petit modèle local, l'agent peut s'arrêter trop tôt ou boucler sans conclure : privilégiez un modèle « instruct » récent, à l'aise avec le function calling.
+  - ⚠️ L'agent répond en texte libre en « inventant » des appels d'outils (ex. `[Appel de l'outil : getOrderStatus…]`) → il n'a reçu **aucun** outil MCP. Sans serveur activé, la route utilise le serveur intégré ; mais un serveur configuré, activé et **injoignable** est ignoré silencieusement. Vérifiez la config « Serveurs MCP » du chat et regardez le terminal : la route logge `[05-mcp] aucun outil MCP disponible` dans ce cas.
 
 ## 🚀 Pour aller plus loin (optionnel)
 
