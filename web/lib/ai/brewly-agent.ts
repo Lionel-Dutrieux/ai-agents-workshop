@@ -1,8 +1,8 @@
 import "server-only";
 
-import { type LanguageModel, ToolLoopAgent } from "ai";
+import type { LanguageModel } from "ai";
 // Décommentez ces imports à l'Étape 1 (exercices/04-agent.md) :
-// import { stepCountIs } from "ai";
+// import { stepCountIs, ToolLoopAgent } from "ai";
 // import { brewlyTools } from "@/app/api/03-tools/tools";
 
 /**
@@ -32,7 +32,7 @@ Réponds en français, de façon chaleureuse et concise, une fois toutes les inf
  * du module) parce que le modèle est choisi dynamiquement par l'utilisateur et
  * résolu depuis la base à chaque requête.
  */
-export function createBrewlyAgent(model: LanguageModel): ToolLoopAgent {
+export function createBrewlyAgent(model: LanguageModel) {
   // ⚠️ À VOUS — Étape 1 (exercices/04-agent.md)
   // Renvoyez un `new ToolLoopAgent({ ... })` configuré avec le modèle, les
   // instructions (`BREWLY_AGENT_INSTRUCTIONS`), les outils du module 3

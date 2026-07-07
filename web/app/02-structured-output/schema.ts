@@ -17,11 +17,11 @@ export const ticketSchema = z.object({
 });
 
 // Le type `Ticket` ci-dessous est utilisé par l'UI (TicketCard,
-// TicketExtractor) pour afficher les champs du ticket. Pour que l'app
-// compile même avant que vous ayez écrit `ticketSchema` (Étape 1), on le
-// déclare ici explicitement plutôt que de le dériver du schéma avec
-// `z.infer<typeof ticketSchema>` — une fois le schéma complété, gardez ce
-// type synchronisé avec les champs que vous y ajoutez.
+// TicketExtractor). Il est déclaré explicitement pour que l'app compile
+// avant que vous ayez écrit `ticketSchema`. Une fois l'Étape 1 terminée,
+// remplacez TOUT ce bloc par :
+//   export type Ticket = z.infer<typeof ticketSchema>;
+// (le type est alors dérivé du schéma — une seule source de vérité).
 export type Ticket = {
   intention:
     | "question_produit"
