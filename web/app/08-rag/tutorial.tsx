@@ -337,12 +337,17 @@ export function RagTutorial() {
       <Callout title="Cassez votre RAG" variant="warning">
         Activez « inclure les non-publiés » dans le panneau, réindexez, puis
         demandez <em>« Quel est le délai pour retourner un article ? »</em> :
-        l&apos;assistant cite [KB-20] et répond <strong>14 jours</strong> — un
-        article obsolète, non publié, mais désormais dans l&apos;index. Fix :
-        désactivez le toggle, réindexez → réponse correcte,{" "}
-        <strong>30 jours</strong> [KB-01]. Leçon : la qualité d&apos;un RAG,
-        c&apos;est d&apos;abord la qualité de son <strong>corpus</strong>{" "}
-        (filtrage, fraîcheur) — bien avant l&apos;algorithme de recherche.
+        [KB-20] — l&apos;ancienne politique (<strong>14 jours</strong>),
+        obsolète et non publiée — apparaît dans les <strong>Sources</strong>,
+        aux côtés de [KB-01] (<strong>30 jours</strong>). Deux politiques
+        contradictoires sont désormais dans le contexte : selon le modèle, la
+        réponse devient fausse, hésite… ou s&apos;en sort, car KB-20
+        s&apos;auto-déclare archivé. Le point sûr : un document qui
+        n&apos;aurait jamais dû être servi a <strong>fui</strong>. Fix :
+        désactivez le toggle, réindexez → [KB-20] disparaît des sources.
+        Leçon : la qualité d&apos;un RAG, c&apos;est d&apos;abord la qualité
+        de son <strong>corpus</strong> (filtrage, fraîcheur) — bien avant
+        l&apos;algorithme de recherche.
       </Callout>
 
       <Callout title="Périmètre du corpus" variant="warning">
