@@ -27,6 +27,13 @@ streaming → UI.
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 Chaque étape correspond à un `⚠️ À VOUS` dans `web/app/api/01-chat/route.ts`
 sur la branche `main`.
 

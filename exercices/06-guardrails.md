@@ -16,6 +16,13 @@ L'agent du module 3 fait confiance à tout ce qu'on lui écrit et à tout ce que
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 Le détecteur (`detectPromptInjection`) et la fonction `redactSecrets` sont déjà fournis dans `lib/ai/guardrails.ts` — pas besoin d'y toucher. Il reste trois trous à combler.
 
 ### Étape 1 — Garde-fou d'entrée (`transformParams`)

@@ -32,9 +32,17 @@ const result = streamText({
   messages: await convertToModelMessages(messages),
 });
 
-// Diffuse la réponse au format attendu par <Chat/>.
+// Diffuse la réponse au format attendu par <Chat/>, en joignant l'usage de
+// tokens (jauge de contexte) et l'id du modèle à la fin du flux.
 return createUIMessageStreamResponse({
-  stream: toUIMessageStream({ stream: result.stream }),
+  stream: toUIMessageStream({
+    stream: result.stream,
+    messageMetadata: ({ part }) => {
+      if (part.type === "finish") {
+        return { usage: part.totalUsage, modelId: model };
+      }
+    },
+  }),
 });`;
 
 const FULL_SOLUTION = `import {
@@ -97,10 +105,13 @@ export function Chat01Tutorial() {
       </Callout>
 
       <TutorialSteps>
-        <TutorialStep title="Créer la route">
+        <TutorialStep title="Compléter la route">
           <p>
-            Créez le fichier ci-dessous. Une route <code>POST</code> reçoit les
-            messages de la conversation et l’id du modèle sélectionné dans l’UI.
+            Le fichier <code>app/api/01-chat/route.ts</code> existe déjà, avec
+            des trous marqués <code>⚠️ À VOUS</code>. Complétez-le à partir du
+            squelette ci-dessous : une route <code>POST</code> reçoit les
+            messages de la conversation et l’id du modèle sélectionné dans
+            l’UI.
           </p>
           <TutorialCode
             code={ROUTE_SKELETON}

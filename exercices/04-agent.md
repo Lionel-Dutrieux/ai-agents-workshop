@@ -4,7 +4,7 @@
 
 ## 🎯 Objectif
 
-Au module 3, le modèle appelait des outils dans une boucle écrite à la main. Ici, on empaquette cette boucle dans un `ToolLoopAgent` : un objet réutilisable qui sait, tout seul, enchaîner plusieurs outils jusqu'à avoir assez d'informations pour répondre. On lui confie ensuite une tâche composée pour observer sa trajectoire.
+Au module 3, le modèle appelait des outils dans une boucle configurée dans la route (le AI SDK gérait déjà l'enchaînement via `stopWhen`). Ici, on empaquette cette boucle dans un `ToolLoopAgent` : un objet réutilisable qui sait, tout seul, enchaîner plusieurs outils jusqu'à avoir assez d'informations pour répondre. On lui confie ensuite une tâche composée pour observer sa trajectoire.
 
 ## 💡 Les concepts en bref
 
@@ -15,9 +15,16 @@ Au module 3, le modèle appelait des outils dans une boucle écrite à la main. 
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 ### Étape 1 — Construire l'agent
 
-Dans `lib/ai/brewly-agent.ts`, la fabrique `createBrewlyAgent` doit renvoyer un `ToolLoopAgent` configuré avec le modèle, les instructions, les outils du module 3 (réutilisés tels quels), et un `stopWhen` qui borne le nombre d'étapes.
+Dans `lib/ai/brewly-agent.ts`, la fabrique `createBrewlyAgent` doit renvoyer un `ToolLoopAgent` configuré avec le modèle, les instructions (`BREWLY_AGENT_INSTRUCTIONS`, déjà définie dans le fichier starter), les outils du module 3 (réutilisés tels quels), et un `stopWhen` qui borne le nombre d'étapes.
 
 ```ts
 // web/lib/ai/brewly-agent.ts

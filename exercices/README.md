@@ -7,6 +7,11 @@ et servent de guide pendant le hands-on.
 
 ## Comment ça marche
 
+- **Règle du jeu** : la fiche est le guide d'action pendant le hands-on —
+  c'est elle qui donne les blocs de code à coller. Le tutoriel in-app
+  (panneau de gauche de chaque module) porte les concepts, la sandbox de
+  données et la solution de secours — les deux sont complémentaires, pas
+  redondants.
 - Vous travaillez sur la branche **`main`** : tout est installé et
   fonctionne, mais certains passages sont à compléter. Chaque trou est
   marqué dans le code par un commentaire `⚠️ À VOUS` qui pointe vers
@@ -41,6 +46,6 @@ commentée.
 
 Suivez **[00-prerequis.md](00-prerequis.md)** (à faire idéalement AVANT le
 jour J, ~20 min) : Node.js, LM Studio (ou un endpoint Azure AI
-Foundry/Ollama), installation du projet (`npm install`, `.env`,
-`npx prisma migrate dev`, `npm run dev`) et configuration du modèle dans
-l'app.
+Foundry/Ollama), installation du projet (`npm install` puis `npm run dev` —
+la base SQLite et le `.env` sont déjà versionnés, rien d'autre à créer ni à
+migrer) et configuration du modèle dans l'app.

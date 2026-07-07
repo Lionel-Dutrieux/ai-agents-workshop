@@ -16,6 +16,13 @@ La recherche par mots-clés ne trouve rien pour « comment me faire rembourser ?
 
 ## 📝 Étapes
 
+> **Comment combler un trou :** repérez le commentaire `⚠️ À VOUS` dans le
+> fichier, décommentez les imports indiqués en tête de fichier, collez le
+> bloc de l'étape à l'emplacement du trou, puis **supprimez le code
+> provisoire** (`return … 501`, `throw new Error("⚠️ …")` ou lignes
+> `void …;`). Le commentaire `⚠️ À VOUS` peut rester, il documente ce que
+> vous avez fait.
+
 ### Étape 1 — Scorer avec `cosineSimilarity` et garder le top-K
 
 `topK` compare le vecteur de la question à chaque chunk de l'index avec `cosineSimilarity` (fournie par le AI SDK, importée de `"ai"` — pas de formule maison), trie par score décroissant et garde les `k` meilleurs.
@@ -118,3 +125,4 @@ try {
 1. Démo « Cassez votre RAG » : activez « inclure les non-publiés » dans le panneau d'indexation, réindexez, puis demandez *« Quel est le délai pour retourner un article ? »* — l'ancienne politique non publiée (KB-20, 14 jours) apparaît dans les Sources aux côtés de la politique actuelle (KB-01, 30 jours). Désactivez le toggle et réindexez pour observer KB-20 disparaître : la qualité d'un RAG dépend d'abord de la qualité de son corpus, avant l'algorithme de recherche.
 2. Changez `k` dans `retrieve` (par ex. 2 au lieu de 4) et observez l'effet sur la pertinence et la longueur du contexte injecté.
 3. Modifiez le découpage dans `chunkArticle` (par ex. par phrase plutôt que par paragraphe) et regardez comment les scores et les extraits retrouvés changent.
+4. Sur le périmètre du corpus : la base de connaissances contient KB-19, une note interne (jamais destinée aux clients) qui reste indexée et donc retrouvable par le RAG. Un RAG expose tout ce qu'on lui donne à indexer, sans distinction de sensibilité — voir le callout « Périmètre du corpus » du tutoriel in-app pour la démonstration complète.
