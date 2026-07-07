@@ -39,8 +39,8 @@ commentée.
 
 ## Avant de commencer
 
-1. `cd web && npm install` puis `npm run dev` → http://localhost:3000
-2. Un modèle de chat configuré dans l'app (bouton « Modèles » — LM Studio,
-   Ollama ou tout endpoint OpenAI-compatible).
-3. Pour le module 08 : LM Studio avec le modèle d'embeddings
-   `text-embedding-nomic-embed-text-v1.5` chargé (serveur local, port 1234).
+Suivez **[00-prerequis.md](00-prerequis.md)** (à faire idéalement AVANT le
+jour J, ~20 min) : Node.js, LM Studio (ou un endpoint Azure AI
+Foundry/Ollama), installation du projet (`npm install`, `.env`,
+`npx prisma migrate dev`, `npm run dev`) et configuration du modèle dans
+l'app.

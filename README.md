@@ -8,7 +8,9 @@ Workshop pratique (3h) : construire des agents IA avec le **AI SDK (Vercel)**, *
 
 Les fiches de chaque module (objectif, concepts, étapes avec les blocs de
 code à copier-coller, comment tester) sont dans [`exercices/`](exercices/) —
-lisibles sans lancer l'application. Commencez par
+lisibles sans lancer l'application. Commencez par les
+[**prérequis**](exercices/00-prerequis.md) (Node.js, LM Studio ou endpoint
+Azure AI Foundry, installation du projet), puis
 [`exercices/README.md`](exercices/README.md).
 
 ## Branches
