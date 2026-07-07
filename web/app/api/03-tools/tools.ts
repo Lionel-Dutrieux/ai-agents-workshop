@@ -1,6 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { findProductByName, listProducts } from "@/lib/dal/brewly-catalog";
+// Décommentez cet import à l'Étape 1/2 (exercices/03-tools.md) :
+// import { findProductByName, listProducts } from "@/lib/dal/brewly-catalog";
 import { getOrder } from "@/lib/dal/brewly-orders";
 
 /**
@@ -38,37 +39,29 @@ export const brewlyTools = {
     },
   }),
 
-  // ── Outil À ÉCRIRE n°1 ─────────────────────────────────────────────────
+  // ⚠️ À VOUS — Étape 1 (exercices/03-tools.md)
+  // Écrivez l'outil `getProductInfo` : donne les infos d'un produit du
+  // catalogue (prix, origine, intensité, stock) à partir de son nom, en
+  // délégant à `findProductByName` (déjà fourni dans le DAL).
   getProductInfo: tool({
-    description:
-      "Donne les informations d'un produit du catalogue Brewly (prix, origine, intensité, stock) à partir de son nom.",
-    inputSchema: z.object({
-      nom: z
-        .string()
-        .describe("Le nom (ou une partie du nom) du produit recherché."),
-    }),
-    execute: async ({ nom }) => {
-      const product = await findProductByName(nom);
-      if (!product) {
-        return { trouve: false as const, nom };
-      }
-      return { trouve: true as const, ...product };
+    description: "TODO — à compléter (exercices/03-tools.md, Étape 1)",
+    // TODO : décrivez les arguments attendus (ex. le nom du produit).
+    inputSchema: z.object({}),
+    execute: async () => {
+      return "⚠️ Outil à implémenter — suivez exercices/03-tools.md (Étape 1)";
     },
   }),
 
-  // ── Outil À ÉCRIRE n°2 ─────────────────────────────────────────────────
+  // ⚠️ À VOUS — Étape 2 (exercices/03-tools.md)
+  // Écrivez l'outil `listCatalog` : liste les produits du catalogue, avec un
+  // filtre optionnel par catégorie (cafe, machine, accessoire), en délégant
+  // à `listProducts` (déjà fourni dans le DAL).
   listCatalog: tool({
-    description:
-      "Liste les produits du catalogue Brewly, éventuellement filtrés par catégorie (café, machine, accessoire). Utile pour conseiller ou comparer.",
-    inputSchema: z.object({
-      categorie: z
-        .enum(["cafe", "machine", "accessoire"])
-        .nullable()
-        .describe("Catégorie à filtrer, ou null pour tout le catalogue."),
-    }),
-    execute: async ({ categorie }) => {
-      const produits = await listProducts(categorie ?? undefined);
-      return { nombre: produits.length, produits };
+    description: "TODO — à compléter (exercices/03-tools.md, Étape 2)",
+    // TODO : décrivez les arguments attendus (ex. la catégorie à filtrer).
+    inputSchema: z.object({}),
+    execute: async () => {
+      return "⚠️ Outil à implémenter — suivez exercices/03-tools.md (Étape 2)";
     },
   }),
 };
