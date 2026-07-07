@@ -34,9 +34,11 @@ yarn-error.log*
 .env*
 !.env.example
 
-# sqlite
-prisma/*.db
+# sqlite — dev.db EST versionnée (base prête à l'emploi, données seedées),
+# seuls les fichiers de journal restent ignorés.
 prisma/*.db-journal
+prisma/*.db-shm
+prisma/*.db-wal
 
 # vercel
 .vercel

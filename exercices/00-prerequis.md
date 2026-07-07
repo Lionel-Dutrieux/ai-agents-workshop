@@ -59,26 +59,15 @@ git clone <URL_DU_REPO>
 cd ai-agents-workshop        # vous êtes sur la branche main : la version starter
 cd web
 npm install                  # dépendances (2-3 min)
-```
-
-Créez le fichier d'environnement et la base de données locale :
-
-```bash
-# macOS / Linux
-cp .env.example .env
-# Windows (PowerShell)
-copy .env.example .env
-
-npx prisma migrate dev       # crée la base SQLite locale (répondez Entrée si un nom est demandé)
-```
-
-Puis lancez l'application :
-
-```bash
 npm run dev
 ```
 
 Ouvrez http://localhost:3000 — la page d'accueil du workshop s'affiche.
+
+C'est tout : la base de données SQLite est **versionnée avec le projet**,
+déjà remplie des données Brewly (catalogue, commandes, base de
+connaissances). Pas de `.env` à créer ni de commande de migration — tout a
+des valeurs par défaut.
 
 ## 3. Brancher votre modèle dans l'app
 
@@ -90,15 +79,15 @@ Tout se configure **dans l'application**, pas dans le code :
    Foundry) : l'URL est préremplie, indiquez l'identifiant du modèle
    (ex. `mistralai/ministral-3-3b`, tel qu'affiché par LM Studio) — pas de
    clé pour LM Studio/Ollama, clé requise pour Azure.
-3. Sur la **page d'accueil**, carte « Données de démonstration » : cliquez
-   pour charger les données Brewly (catalogue, commandes, base de
-   connaissances).
+3. Les **données de démonstration** Brewly sont déjà en base ; la carte
+   « Données de démonstration » de la page d'accueil permet de les remettre
+   à zéro à tout moment si vous les modifiez pendant les exercices.
 
 ## 4. Vérifier que tout est prêt ✅
 
 - [ ] `node -v` affiche v20.9 ou plus
 - [ ] http://localhost:3000 s'affiche
-- [ ] Les données de démonstration sont chargées (la carte de l'accueil les compte)
+- [ ] La carte « Données de démonstration » de l'accueil affiche des données (déjà incluses)
 - [ ] Un modèle apparaît dans le sélecteur du chat
 - [ ] LM Studio : le serveur local tourne (une requête sur
       http://localhost:1234/v1/models liste vos modèles)
