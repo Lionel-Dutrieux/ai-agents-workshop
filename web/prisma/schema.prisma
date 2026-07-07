@@ -172,3 +172,27 @@ model Message {
 
   @@index([conversationId, position])
 }
+
+/// Un chunk vectorisé du centre de connaissances — l'index du module 08 (RAG).
+/// Reconstruit à la demande depuis l'UI du module. `vecteur` est un tableau
+/// JSON de nombres : SQLite n'a pas de type vectoriel — en production on
+/// prendrait une base dédiée (pgvector…), ici l'échelle (~60 chunks) permet
+/// de garder le calcul de similarité visible en TypeScript.
+model BrewlyEmbedding {
+  id         String   @id @default(cuid())
+  /// Référence de l'article source (ex. "KB-01").
+  reference  String
+  titre      String
+  /// Position du chunk dans l'article (0, 1, 2…).
+  chunkIndex Int
+  /// Texte du chunk (un paragraphe de l'article).
+  contenu    String
+  /// Embedding sérialisé en JSON (ex. "[0.01, -0.23, …]").
+  vecteur    String
+  /// L'article source était-il publié au moment de l'indexation ?
+  /// Permet d'afficher « index contaminé » dans le panneau (démo KB-20).
+  publie     Boolean
+  createdAt  DateTime @default(now())
+
+  @@index([reference])
+}
