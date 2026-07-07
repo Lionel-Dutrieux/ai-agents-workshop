@@ -6,10 +6,11 @@ node_modules/
 out/
 next-env.d.ts
 
-# Prisma (client généré + SQLite)
+# Prisma (client généré + journaux SQLite — web/prisma/dev.db EST versionnée)
 web/lib/generated/
-*.db
 *.db-journal
+*.db-shm
+*.db-wal
 
 # Env
 .env

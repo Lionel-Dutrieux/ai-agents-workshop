@@ -15,10 +15,13 @@ Application principale du workshop : frontend + backend de l'assistant Brewly.
 
 ```bash
 npm install
-cp .env.example .env        # puis renseigner la clé API du provider LLM
-npx prisma migrate dev      # crée la base SQLite locale (quand des modèles existeront)
 npm run dev
 ```
+
+La base SQLite (`prisma/dev.db`) est versionnée, déjà migrée et remplie des
+données de démo — rien d'autre à faire. Le `.env` est optionnel (voir
+`.env.example`) ; les modèles LLM se configurent dans l'app, pas en
+variables d'environnement.
 
 L'app tourne sur [http://localhost:3000](http://localhost:3000).
 
