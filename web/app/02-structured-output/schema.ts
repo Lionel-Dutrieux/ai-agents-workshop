@@ -7,33 +7,30 @@ import { z } from "zod";
  * (`streamObject`) et côté client (`useObject`). Les `.describe()` guident le
  * modèle sur ce qu'il doit remplir.
  */
-// ⚠️ À VOUS — Étape 1 (exercices/02-structured-output.md)
-// Décrivez la forme du ticket que le modèle doit produire : intention
-// (enum), orderId (string nullable), sentiment (enum), priorite (enum),
-// resume (string). Utilisez `.describe()` sur chaque champ pour guider le
-// modèle.
 export const ticketSchema = z.object({
-  /* ⚠️ À VOUS — Étape 1 */
+  intention: z
+    .enum([
+      "question_produit",
+      "suivi_commande",
+      "reclamation",
+      "remboursement",
+      "autre",
+    ])
+    .describe("Intention principale du client"),
+  orderId: z
+    .string()
+    .nullable()
+    .describe("Numéro de commande mentionné dans l'email, ou null si absent"),
+  sentiment: z
+    .enum(["positif", "neutre", "negatif"])
+    .describe("Ton général de l'email"),
+  priorite: z
+    .enum(["basse", "moyenne", "haute"])
+    .describe("Priorité de traitement du ticket"),
+  resume: z.string().describe("Résumé du besoin du client en une phrase"),
 });
 
-// Le type `Ticket` ci-dessous est utilisé par l'UI (TicketCard,
-// TicketExtractor). Il est déclaré explicitement pour que l'app compile
-// avant que vous ayez écrit `ticketSchema`. Une fois l'Étape 1 terminée,
-// remplacez TOUT ce bloc par :
-//   export type Ticket = z.infer<typeof ticketSchema>;
-// (le type est alors dérivé du schéma — une seule source de vérité).
-export type Ticket = {
-  intention:
-    | "question_produit"
-    | "suivi_commande"
-    | "reclamation"
-    | "remboursement"
-    | "autre";
-  orderId: string | null;
-  sentiment: "positif" | "neutre" | "negatif";
-  priorite: "basse" | "moyenne" | "haute";
-  resume: string;
-};
+export type Ticket = z.infer<typeof ticketSchema>;
 
 /** Emails clients d'exemple, pour tester rapidement l'extraction. */
 export const EXAMPLE_EMAILS: { label: string; body: string }[] = [

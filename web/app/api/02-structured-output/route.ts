@@ -1,11 +1,9 @@
-import { NoObjectGeneratedError } from "ai";
-// Décommentez ces imports au fil des étapes :
-// import { generateObject, streamObject } from "ai";
+import { generateObject, NoObjectGeneratedError, streamObject } from "ai";
 import { ticketSchema } from "@/app/02-structured-output/schema";
 import { resolveLanguageModel } from "@/lib/ai/models";
 
 /**
- * Module 2 — Structured output (à compléter — voir exercices/02-structured-output.md).
+ * Module 2 — Structured output (solution de référence).
  *
  * Transforme un email client (texte libre) en ticket structuré et typé.
  * Deux modes, pour comparer les deux approches du SDK :
@@ -34,14 +32,13 @@ export async function POST(req: Request) {
   // d'un bloc. Simple à consommer, mais aucun retour visuel avant la fin.
   if (mode === "generate") {
     try {
-      // ⚠️ À VOUS — Étape 2b (exercices/02-structured-output.md)
-      // Appelez `generateObject` avec `model: languageModel`,
-      // `schema: ticketSchema`, `instructions: INSTRUCTIONS` et
-      // `prompt: email`, puis renvoyez `{ object }` au client.
-      return new Response(
-        "Module 02 (mode generate) à implémenter — suivez exercices/02-structured-output.md",
-        { status: 501 }
-      );
+      const { object } = await generateObject({
+        model: languageModel,
+        schema: ticketSchema,
+        instructions: INSTRUCTIONS,
+        prompt: email,
+      });
+      return Response.json({ object });
     } catch (error) {
       // Quand le modèle n'arrive pas à produire un objet conforme au schéma
       // (JSON invalide ou champs manquants), le SDK lève NoObjectGeneratedError
@@ -61,12 +58,12 @@ export async function POST(req: Request) {
   }
 
   // Mode « streaming » : diffuse le JSON partiel, consommé par `useObject`.
-  // ⚠️ À VOUS — Étape 2a (exercices/02-structured-output.md)
-  // Appelez `streamObject` avec `model: languageModel`, `schema: ticketSchema`,
-  // `instructions: INSTRUCTIONS` et `prompt: email`, puis renvoyez le flux au
-  // client avec `result.toTextStreamResponse()`.
-  return new Response(
-    "Module 02 (mode stream) à implémenter — suivez exercices/02-structured-output.md",
-    { status: 501 }
-  );
+  const result = streamObject({
+    model: languageModel,
+    schema: ticketSchema,
+    instructions: INSTRUCTIONS,
+    prompt: email,
+  });
+
+  return result.toTextStreamResponse();
 }

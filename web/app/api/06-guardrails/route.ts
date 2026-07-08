@@ -4,14 +4,11 @@ import {
   stepCountIs,
   streamText,
   toUIMessageStream,
-  // Décommentez cet import à l'Étape 3 (exercices/06-guardrails.md) :
-  // wrapLanguageModel,
+  wrapLanguageModel,
 } from "ai";
 import { brewlyTools } from "@/app/api/03-tools/tools";
 import type { ChatUIMessage } from "@/components/chat/types";
-import { SECRET_CANARY } from "@/lib/ai/guardrails";
-// Décommentez cet import à l'Étape 3 (exercices/06-guardrails.md) :
-// import { brewlyGuardrails } from "@/lib/ai/guardrails";
+import { brewlyGuardrails, SECRET_CANARY } from "@/lib/ai/guardrails";
 import { resolveLanguageModel } from "@/lib/ai/models";
 
 /**
@@ -37,15 +34,20 @@ export async function POST(req: Request) {
 
   const languageModel = await resolveLanguageModel(model);
 
-  // ⚠️ À VOUS — Étape 3 (exercices/06-guardrails.md)
-  // Le modèle est utilisé ici SANS protection : remplacez `model: languageModel`
-  // ci-dessous par le modèle emballé avec `wrapLanguageModel({ model, middleware:
-  // brewlyGuardrails })` (le cast `as Extract<typeof languageModel, {
-  // specificationVersion: string }>` est nécessaire, `resolveLanguageModel`
-  // renvoie un type large).
+  // Le seul ajout par rapport au module 3 : on emballe le modèle avec le
+  // middleware de garde-fous. Tout le reste de la boucle est identique.
+  // `resolveLanguageModel` renvoie toujours une INSTANCE de modèle (jamais un
+  // simple id) ; on restreint le type pour satisfaire `wrapLanguageModel`.
+  const guardedModel = wrapLanguageModel({
+    model: languageModel as Extract<
+      typeof languageModel,
+      { specificationVersion: string }
+    >,
+    middleware: brewlyGuardrails,
+  });
 
   const result = streamText({
-    model: languageModel,
+    model: guardedModel,
     instructions: BREWLY_SYSTEM_PROMPT,
     messages: await convertToModelMessages(messages),
     tools: brewlyTools,
