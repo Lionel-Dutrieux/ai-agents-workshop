@@ -18,13 +18,19 @@ const BASE_URL =
 export const EMBEDDINGS_MODEL_ID =
   process.env.EMBEDDINGS_MODEL_ID ?? "text-embedding-nomic-embed-text-v1.5";
 
+/**
+ * Clé API optionnelle. Sans clé, aucun en-tête Authorization n'est envoyé
+ * (LM Studio rejette les tokens invalides, même factices). Ne la définir
+ * que si l'authentification est activée dans LM Studio.
+ */
+const API_KEY = process.env.EMBEDDINGS_API_KEY || undefined;
+
 /** Instancie le modèle d'embeddings (endpoint OpenAI-compatible LM Studio). */
 export function resolveEmbeddingModel() {
   const provider = createOpenAICompatible({
     name: "lmstudio",
     baseURL: BASE_URL,
-    // LM Studio n'exige pas de clé ; le champ est requis par le provider.
-    apiKey: "unused",
+    apiKey: API_KEY,
   });
   return provider.embeddingModel(EMBEDDINGS_MODEL_ID);
 }
@@ -39,6 +45,13 @@ export function toEmbeddingsError(error: unknown): Error {
     return new Error(
       `LM Studio est injoignable sur ${BASE_URL}. Lancez LM Studio, onglet ` +
         "« Developer », et démarrez le serveur local."
+    );
+  }
+  if (/token|401|unauthorized/i.test(message)) {
+    return new Error(
+      "LM Studio a refusé la clé API. Si l'authentification est activée " +
+        "dans LM Studio, définissez EMBEDDINGS_API_KEY dans web/.env ; " +
+        "sinon, laissez cette variable vide."
     );
   }
   if (/not found|404|no model/i.test(message)) {
