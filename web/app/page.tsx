@@ -12,6 +12,14 @@ import { TechStackDialog } from "@/components/tech-stack-dialog";
 
 const exercises = [
   {
+    href: "/00-dev-avec-ia",
+    number: "00",
+    title: "Développer avec l'IA",
+    description:
+      "Utiliser un agent de code (Claude Code, Copilot…) pour développer : skills, MCP, plan mode, revue — on drive l'agent, jamais l'inverse.",
+    level: "Transverse",
+  },
+  {
     href: "/01-chat",
     number: "01",
     title: "Premier chat",
