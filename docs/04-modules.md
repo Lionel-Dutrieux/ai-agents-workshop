@@ -2,6 +2,13 @@
 
 > Vue d'ensemble de chaque module : objectif pédagogique, contenu, exercice. Les énoncés pas à pas se trouvent dans les fiches du dossier [`exercices/`](../exercices/).
 
+## Module 0 — Développer avec l'IA (démo + take-home)
+
+- **Objectif** : montrer comment utiliser un agent de code (Claude Code, GitHub Copilot…) pour développer au quotidien — l'inverse des modules 01-08, qui construisent des agents *dans* l'application.
+- **Contenu** : la règle d'or (on drive l'agent, on n'accepte jamais du code qu'on ne comprend pas — dette technique et sécurité), instructions de repo (`AGENTS.md`/`CLAUDE.md`/`copilot-instructions.md`), skills (ceux de ce repo : `ai-sdk`, `ai-elements`, installés via `skills-lock.json`), MCP côté dev (context7 pour la doc à jour, GitHub, Playwright), choix du modèle selon la tâche, plan mode, revue systématique, pièges (secrets, MCP tiers, permissions). Exemple méta : ce workshop a été construit avec ces pratiques.
+- **Format** : démo commentée (~10 min au wrap-up) avec deux prompts scriptés — compréhension de la codebase (lecture seule) et mini-feature « Sommelier Brewly » en réassemblage pur (plan mode → diff → revue → tool call sur les données de la sandbox) — plus fiche take-home complète.
+- **Concepts** : agent de code, contexte persistant, skills, MCP client côté outillage, human-in-the-loop.
+
 ## Module 1 — Premier chat (AI SDK + Next.js)
 
 - **Objectif** : comprendre le cycle requête → LLM → streaming → UI.

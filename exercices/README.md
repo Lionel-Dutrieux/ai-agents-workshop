@@ -29,6 +29,7 @@ et servent de guide pendant le hands-on.
 
 | Module | Fiche | Durée | Niveau |
 |---|---|---|---|
+| 00 — Développer avec l'IA | [00-dev-avec-ia.md](00-dev-avec-ia.md) | ~10 min (démo au wrap-up) | transverse |
 | 01 — Premier chat | [01-chat.md](01-chat.md) | ~25 min | découverte |
 | 02 — Structured output | [02-structured-output.md](02-structured-output.md) | ~20 min | facile |
 | 03 — Tool calling | [03-tools.md](03-tools.md) | ~30 min | intermédiaire |
@@ -40,7 +41,9 @@ et servent de guide pendant le hands-on.
 
 Les modules 01→05 sont le cœur du parcours ; 06 et 08 sont les
 approfondissements pour les groupes qui avancent bien, 07 est une démo
-commentée.
+commentée. Le module 00 est à part : il ne construit pas d'agent, il montre
+comment **utiliser** un agent de code (Claude Code, GitHub Copilot…) pour
+développer — démo au wrap-up, fiche complète à emporter.
 
 ## Avant de commencer
 

@@ -67,6 +67,35 @@ décrit dans [06-app-concept.md](06-app-concept.md).
 Deux mini-démos de 5 min sont scriptées pour les transitions (injection
 indirecte, « cassez votre RAG ») — voir [03-workshop-flow.md](03-workshop-flow.md).
 
+### Module 00 — développer avec l'IA (démo au wrap-up + fiche take-home)
+
+Le module 00 ([`00-dev-avec-ia.md`](../exercices/00-dev-avec-ia.md)) retourne
+la caméra : après trois heures à construire des agents, on montre qu'un agent
+de code (Claude Code, GitHub Copilot…) est aussi **l'outil avec lequel on
+développe** — et que ce workshop lui-même a été construit ainsi (skills
+`ai-sdk`/`ai-elements` et `web/AGENTS.md` versionnés dans le repo, à montrer).
+Le message central à marteler : **on drive l'agent, on ne se fait pas
+driver — on n'accepte jamais du code qu'on ne comprend pas** (dette
+technique, sécurité).
+
+Deux prompts scriptés, verbatim dans la fiche : compréhension de la codebase
+(lecture seule), puis mini-feature « Sommelier Brewly » — plan mode,
+exécution, revue du diff **en live à l'écran**, et preuve finale par un tool
+call sur un produit ajouté dans la sandbox 30 secondes plus tôt.
+
+**Préparation obligatoire** — une démo live d'agent n'est jamais
+déterministe :
+
+- **Répétez la démo avant le jour J**, avec le même modèle et le même état
+  de repo. Chronométrez : ~3 min (démo 1) + ~8 min (démo 2).
+- **Jouez-la sur une branche jetable** (`demo/sommelier`), jamais sur `main` ;
+  on la supprime après la séance, le résultat n'a aucune valeur.
+- **Plan B** : gardez une branche préparée à l'avance avec le résultat de la
+  démo 2. Si le live déraille (modèle lent, plan à côté), basculez dessus et
+  commentez le diff — le message (plan → revue → pilotage) passe aussi bien.
+- Si le temps manque au wrap-up, ne jouez que la démo 1 (3 min, zéro risque)
+  et pointez la fiche pour le reste.
+
 ## Ce qui est attendu des participants
 
 - **Avant le jour J** : les prérequis de
@@ -93,3 +122,6 @@ indirecte, « cassez votre RAG ») — voir [03-workshop-flow.md](03-workshop-fl
   concepts vus et rappeler qu'ils se transposent tels quels dans l'écosystème
   de chacun. Les modules 06 et 08 sont le prolongement naturel à faire en
   autonomie, fiches à l'appui.
+- **Semer le module 00 dès l'intro** : une phrase suffit (« ce workshop a été
+  construit avec un agent de code — on vous montre comment à la fin ») ; la
+  démo elle-même se joue au wrap-up, si le timing le permet.
