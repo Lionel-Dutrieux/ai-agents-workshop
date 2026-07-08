@@ -11,7 +11,7 @@ Faire produire au modèle du JSON typé et fiable plutôt que du texte libre : t
 - **Schéma zod** : la « forme » attendue de la réponse — comme un moule qui contraint le modèle à remplir des champs précis, pas du texte libre.
 - **`streamObject`** : diffuse l'objet au fil de sa génération, champ par champ — utile quand un humain regarde l'écran.
 - **`generateObject`** : attend l'objet complet et validé avant de le renvoyer — plus simple, adapté à un traitement automatisé côté serveur.
-- **Validation stricte** : si la sortie du modèle ne respecte pas le schéma, le SDK lève une erreur au lieu de vous refiler un objet à moitié faux.
+- **Validation stricte** : si la sortie du modèle ne respecte pas le schéma, le SDK lève une erreur au lieu de renvoyer un objet à moitié faux.
 - **Une seule source de vérité** : le même schéma zod sert côté serveur (`streamObject`) et côté client (`useObject`).
 
 ## 📝 Étapes

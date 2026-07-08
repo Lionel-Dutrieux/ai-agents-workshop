@@ -1,18 +1,21 @@
 # Structure du repo
 
-> High-level, à affiner au fur et à mesure de la création des modules.
-
-## Arborescence cible
+## Arborescence
 
 ```
 ai-agents-workshop/
 ├── README.md                     # Point d'entrée : objectifs, prérequis, liens
-├── docs/                         # Planification + supports du workshop
+├── docs/                         # Documentation du workshop
 │   ├── 01-repo-structure.md
 │   ├── 02-branching-strategy.md
 │   ├── 03-workshop-flow.md
 │   ├── 04-modules.md
-│   └── 05-open-questions.md
+│   └── 06-app-concept.md
+│
+├── exercices/                    # Les fiches d'exercices (une par module)
+│   ├── 00-prerequis.md
+│   ├── 01-chat.md … 08-rag.md
+│   └── README.md
 │
 ├── web/                          # App Next.js unique (frontend + backend)
 │   ├── app/
@@ -20,36 +23,35 @@ ai-agents-workshop/
 │   │   ├── 02-structured-output/
 │   │   ├── 03-tools/
 │   │   ├── 04-agent/
-│   │   └── 05-mcp-client/
-│   ├── .env.example
+│   │   ├── 05-mcp/
+│   │   ├── 06-guardrails/
+│   │   ├── 07-foundry/
+│   │   ├── 08-rag/
+│   │   └── api/                  # Routes API des modules + serveur MCP (/api/mcp)
+│   ├── lib/                      # DAL Brewly, agent, guardrails, RAG, serveur MCP
+│   ├── prisma/                   # Schéma, migrations et base SQLite versionnée
 │   └── package.json
 │
-├── mcp-server/                   # Serveur MCP standalone (@modelcontextprotocol/sdk)
-│   ├── src/
-│   └── package.json
-│
-├── foundry/                      # Exemple Microsoft Foundry (TypeScript)
-│   └── ...
-│
-└── dotnet-foundry/               # (Bonus) Implémentation light .NET + Foundry SDK
-    └── ...
+└── foundry/                      # Module 07 : script d'invocation d'un agent Microsoft Foundry
+    ├── run-agent.ts
+    ├── agent-instructions.md
+    └── README.md
 ```
 
 ## Choix structurant : une seule app Next.js
 
-**Recommandation : une seule app Next.js (`web/`) avec une route par module**, plutôt qu'une app par module.
+Le workshop repose sur **une seule app Next.js (`web/`) avec une route par module**, plutôt qu'une app par module :
 
-Pourquoi :
-- Un seul `npm install` + un seul `.env` → moins de friction au démarrage (crucial sur 3h).
-- Les participants naviguent entre les modules via une simple page d'accueil.
-- Le code partagé (config du provider, composants UI de chat) est mutualisé.
+- Un seul `npm install`, une seule configuration → moins de friction au démarrage (crucial sur 3h).
+- Les participants naviguent entre les modules via la page d'accueil.
+- Le code partagé (résolution du modèle, composant `<Chat/>`, données Brewly) est mutualisé : chaque module ne montre que ce qui lui est propre.
 
-Alternative écartée : monorepo avec une app par exemple → trop de setup, trop de temps perdu en installation pendant le workshop.
+Le serveur MCP du module 05 est lui aussi hébergé dans l'app (`web/lib/mcp/` + route `/api/mcp`) : le protocole reste identique à un serveur standalone, sans coût de setup supplémentaire.
 
-Les projets **réellement distincts** (serveur MCP, .NET) restent dans des dossiers séparés à la racine car ce sont des runtimes différents.
+Seul le module 07 (Microsoft Foundry) vit dans un dossier séparé (`foundry/`) : c'est un script Node autonome avec son propre runtime et sa propre authentification Azure.
 
 ## Conventions
 
-- Chaque module a un `README.md` local : objectif, énoncé de l'exercice, indices.
-- Numérotation `01-`, `02-`… partout pour rendre la progression évidente.
-- `.env.example` à la racine de chaque projet listant toutes les clés nécessaires.
+- Chaque module a sa fiche dans `exercices/` : objectif, concepts, étapes avec les blocs de code, tests, dépannage.
+- Numérotation `01-`, `02-`… partout (routes, fiches, API) pour rendre la progression évidente.
+- Les emplacements à compléter sont marqués `⚠️ À VOUS` dans le code de la branche `main`.
