@@ -43,9 +43,9 @@ export function chunkArticle(contenu: string): string[] {
 }
 
 /**
- * ⚠️ Atelier — à écrire : score chaque chunk de l'index contre le vecteur
- * de la question avec `cosineSimilarity` (fourni par le AI SDK), trie par
- * similarité décroissante et garde les k meilleurs.
+ * Scoring : chaque chunk de l'index est comparé au vecteur de la question
+ * avec `cosineSimilarity` (fourni par le AI SDK), trié par similarité
+ * décroissante ; on garde les k meilleurs.
  */
 export function topK(
   question: number[],
@@ -84,7 +84,7 @@ export async function indexKnowledge(
     }))
   );
 
-  // ⚠️ Atelier — à écrire : vectoriser tous les chunks en un lot.
+  // Vectorisation de tous les chunks en un seul lot (`embedMany`).
   // Le titre est préfixé au paragraphe : il porte du sens que le paragraphe
   // seul n'a pas toujours (ex. « Le remboursement est émis… » → retours).
   let embeddings: number[][];
@@ -122,7 +122,7 @@ export async function retrieve(
     return [];
   }
 
-  // ⚠️ Atelier — à écrire : vectoriser la question (MÊME modèle que l'index).
+  // Vectorisation de la question (`embed`) — avec le MÊME modèle que l'index.
   let embedding: number[];
   try {
     ({ embedding } = await embed({
