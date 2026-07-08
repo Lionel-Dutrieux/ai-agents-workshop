@@ -20,6 +20,7 @@ Azure AI Foundry, installation du projet), puis
 
 ## Documentation
 
+- [Guide du présentateur](docs/00-guide-presentateur.md)
 - [Structure du repo](docs/01-repo-structure.md)
 - [Stratégie de branches](docs/02-branching-strategy.md)
 - [Déroulé du workshop (3h)](docs/03-workshop-flow.md)
