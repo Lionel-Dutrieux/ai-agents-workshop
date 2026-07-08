@@ -1,6 +1,6 @@
 # Déroulé du workshop — 3h
 
-> Timing indicatif, à ajuster après un dry-run. Principe : difficulté progressive, chaque module s'appuie sur le précédent.
+> Guide de l'animateur. Principe : difficulté progressive, chaque module s'appuie sur le précédent.
 >
 > Les prérequis (Node.js, LM Studio, `npm install`, `.env` et base SQLite déjà versionnés) sont faits **avant le jour J** — voir [`exercices/00-prerequis.md`](../exercices/00-prerequis.md). Le temps de workshop ne sert qu'aux modules.
 

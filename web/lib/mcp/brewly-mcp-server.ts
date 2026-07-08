@@ -2,7 +2,8 @@ import "server-only";
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { findProductByName, listProducts } from "@/lib/dal/brewly-catalog";
+// Décommentez cet import aux Étapes 1/2 (exercices/05-mcp.md) :
+// import { findProductByName, listProducts } from "@/lib/dal/brewly-catalog";
 import { getOrder } from "@/lib/dal/brewly-orders";
 
 /**
@@ -53,44 +54,49 @@ export function createBrewlyMcpServer() {
     }
   );
 
+  // ⚠️ À VOUS — Étape 1 (exercices/05-mcp.md)
+  // Ajoutez ici un `server.registerTool("getProductInfo", { ... }, async (...) => { ... })`
+  // qui donne les infos d'un produit du catalogue (prix, origine, intensité,
+  // stock) à partir de son nom, en délégant à `findProductByName` (DAL).
   server.registerTool(
     "getProductInfo",
     {
-      title: "Fiche produit",
-      description:
-        "Donne les informations d'un produit du catalogue Brewly (prix, origine, intensité, stock) à partir de son nom.",
-      inputSchema: {
-        nom: z
-          .string()
-          .describe("Le nom (ou une partie du nom) du produit recherché."),
-      },
+      title: "TODO",
+      description: "TODO — à compléter (exercices/05-mcp.md, Étape 1)",
+      inputSchema: {},
     },
-    async ({ nom }) => {
-      const product = await findProductByName(nom);
-      const result = product
-        ? { trouve: true as const, ...product }
-        : { trouve: false as const, nom };
-      return { content: [{ type: "text", text: JSON.stringify(result) }] };
+    async () => {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "⚠️ Outil à implémenter — suivez exercices/05-mcp.md (Étape 1)",
+          },
+        ],
+      };
     }
   );
 
+  // ⚠️ À VOUS — Étape 2 (exercices/05-mcp.md)
+  // Ajoutez ici un `server.registerTool("listCatalog", { ... }, async (...) => { ... })`
+  // qui liste les produits du catalogue, avec un filtre optionnel par
+  // catégorie (cafe, machine, accessoire), en délégant à `listProducts` (DAL).
   server.registerTool(
     "listCatalog",
     {
-      title: "Catalogue produits",
-      description:
-        "Liste les produits du catalogue Brewly, éventuellement filtrés par catégorie (café, machine, accessoire). Utile pour conseiller ou comparer.",
-      inputSchema: {
-        categorie: z
-          .enum(["cafe", "machine", "accessoire"])
-          .nullable()
-          .describe("Catégorie à filtrer, ou null pour tout le catalogue."),
-      },
+      title: "TODO",
+      description: "TODO — à compléter (exercices/05-mcp.md, Étape 2)",
+      inputSchema: {},
     },
-    async ({ categorie }) => {
-      const produits = await listProducts(categorie ?? undefined);
-      const result = { nombre: produits.length, produits };
-      return { content: [{ type: "text", text: JSON.stringify(result) }] };
+    async () => {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "⚠️ Outil à implémenter — suivez exercices/05-mcp.md (Étape 2)",
+          },
+        ],
+      };
     }
   );
 

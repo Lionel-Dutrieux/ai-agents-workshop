@@ -1,13 +1,16 @@
 import "server-only";
 
-import { cosineSimilarity, embed, embedMany } from "ai";
+// Décommentez ces imports au fil des étapes (exercices/08-rag.md) :
+// import { cosineSimilarity, embed, embedMany } from "ai";
 import {
   type EmbeddedChunk,
   listEmbeddings,
-  replaceEmbeddings,
+  // Décommentez cet import à l'Étape 2 (exercices/08-rag.md) :
+  // replaceEmbeddings,
 } from "@/lib/dal/brewly-embeddings";
 import { listKnowledge } from "@/lib/dal/brewly-knowledge";
-import { resolveEmbeddingModel, toEmbeddingsError } from "./embeddings";
+// Décommentez cet import aux Étapes 2/3 (exercices/08-rag.md) :
+// import { resolveEmbeddingModel, toEmbeddingsError } from "./embeddings";
 
 /**
  * Le cœur du module 08 : un pipeline RAG entièrement visible.
@@ -43,24 +46,20 @@ export function chunkArticle(contenu: string): string[] {
 }
 
 /**
- * ⚠️ Atelier — à écrire : score chaque chunk de l'index contre le vecteur
- * de la question avec `cosineSimilarity` (fourni par le AI SDK), trie par
- * similarité décroissante et garde les k meilleurs.
+ * ⚠️ À VOUS — Étape 1 (exercices/08-rag.md)
+ * Scorez chaque chunk de l'index contre le vecteur de la question avec
+ * `cosineSimilarity` (fourni par le AI SDK), triez par similarité
+ * décroissante et gardez les k meilleurs.
  */
 export function topK(
   question: number[],
   index: EmbeddedChunk[],
   k: number
 ): RetrievedChunk[] {
-  return index
-    .map((chunk) => ({
-      reference: chunk.reference,
-      titre: chunk.titre,
-      contenu: chunk.contenu,
-      score: cosineSimilarity(question, chunk.vecteur),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, k);
+  void question;
+  void index;
+  void k;
+  return [];
 }
 
 /**
@@ -84,29 +83,13 @@ export async function indexKnowledge(
     }))
   );
 
-  // ⚠️ Atelier — à écrire : vectoriser tous les chunks en un lot.
-  // Le titre est préfixé au paragraphe : il porte du sens que le paragraphe
-  // seul n'a pas toujours (ex. « Le remboursement est émis… » → retours).
-  let embeddings: number[][];
-  try {
-    ({ embeddings } = await embedMany({
-      model: resolveEmbeddingModel(),
-      values: chunks.map((chunk) => `${chunk.article.titre}\n\n${chunk.contenu}`),
-    }));
-  } catch (error) {
-    throw toEmbeddingsError(error);
-  }
-
-  return replaceEmbeddings(
-    chunks.map((chunk, i) => ({
-      reference: chunk.article.reference,
-      titre: chunk.article.titre,
-      chunkIndex: chunk.chunkIndex,
-      contenu: chunk.contenu,
-      vecteur: embeddings[i],
-      publie: chunk.article.publie,
-    }))
-  );
+  // ⚠️ À VOUS — Étape 2 (exercices/08-rag.md)
+  // Vectorisez tous les chunks en un lot avec `embedMany`. Le titre est à
+  // préfixer à chaque paragraphe : il porte du sens que le paragraphe seul
+  // n'a pas toujours (ex. « Le remboursement est émis… » → retours). Le
+  // résultat doit être stocké avec `replaceEmbeddings(...)`.
+  void chunks;
+  throw new Error("⚠️ À implémenter — suivez exercices/08-rag.md (Étape 2)");
 }
 
 /**
@@ -122,25 +105,11 @@ export async function retrieve(
     return [];
   }
 
-  // ⚠️ Atelier — à écrire : vectoriser la question (MÊME modèle que l'index).
-  let embedding: number[];
-  try {
-    ({ embedding } = await embed({
-      model: resolveEmbeddingModel(),
-      value: question,
-    }));
-  } catch (error) {
-    throw toEmbeddingsError(error);
-  }
-
-  try {
-    return topK(embedding, index, k);
-  } catch {
-    // `cosineSimilarity` du SDK refuse deux vecteurs de tailles différentes :
-    // l'index a été construit avec un autre modèle d'embeddings.
-    throw new Error(
-      "Dimensions incompatibles : l'index a probablement été construit avec " +
-        "un autre modèle d'embeddings. Videz l'index puis réindexez."
-    );
-  }
+  // ⚠️ À VOUS — Étape 3 (exercices/08-rag.md)
+  // Vectorisez la question avec `embed` (le MÊME modèle que pour l'index),
+  // puis appelez `topK(embedding, index, k)`. Attrapez les erreurs
+  // d'embeddings avec `toEmbeddingsError` et les dimensions incompatibles
+  // (l'index a été construit avec un autre modèle) séparément.
+  void k;
+  throw new Error("⚠️ À implémenter — suivez exercices/08-rag.md (Étape 3)");
 }

@@ -73,6 +73,6 @@ Fonctionnalités intégrées :
 
 ## Points d'attention
 
-- Le client Prisma est généré dans `lib/generated/prisma` (gitignoré) — lancer `npm run db:generate` après un clone.
+- Le client Prisma est généré dans `lib/generated/prisma` (gitignoré) — le script `postinstall` le régénère automatiquement ; en cas de besoin, `npm run db:generate`.
 - Accès DB via le singleton [`lib/prisma.ts`](lib/prisma.ts) (adapter better-sqlite3, requis par Prisma 7).
-- La base SQLite (`prisma/dev.db`) n'est pas versionnée ; elle sera créée par les migrations + seed.
+- La base SQLite (`prisma/dev.db`) est versionnée avec le projet ; la carte « Données de démonstration » de la page d'accueil permet de remettre les données à zéro.
