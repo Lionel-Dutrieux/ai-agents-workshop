@@ -38,14 +38,29 @@ const PROMPT_SOMMELIER = `Je veux une page /sommelier : « le Sommelier Brewly �
 recommande des cafés du catalogue selon les goûts du client (corsé,
 fruité, doux, décaféiné…).
 
+Comportement attendu :
+- Persona : sommelier du café, chaleureux et expert. Si les goûts ne
+  sont pas clairs, il pose UNE question avant de recommander.
+- Il recommande UNIQUEMENT des produits du catalogue (via les outils),
+  en stock, avec prix, origine et intensité — 2 options max, et un mot
+  sur pourquoi chacune correspond aux goûts exprimés.
+- Réponses en français, courtes et engageantes.
+
+Interface :
+- Réutilise le composant <Chat/> existant (components/chat), en
+  t'inspirant de app/04-agent/page.tsx : titre d'accueil
+  « Sommelier Brewly », description d'accueil, et 3 suggestions
+  cliquables (prop \`suggestions\`) pour tester sans rien taper :
+  « Un café corsé pour le matin », « Plutôt doux et fruité, une
+  idée ? », « Un décaféiné pour le soir ».
+- Une page simple : pas besoin du panneau tutoriel (ExerciseShell).
+
 Contraintes strictes :
-- Réutilise le composant <Chat/> existant (components/chat) et calque
-  la route sur le pattern du module 04 (route + ToolLoopAgent).
+- La route calque le pattern du module 04 (route + ToolLoopAgent).
 - Réutilise les brewlyTools existants tels quels — aucun nouvel
   outil, aucune modification de la base de données.
 - Ne modifie aucun fichier des modules existants (01 à 08).
-- La seule vraie nouveauté : les instructions de l'agent (persona
-  sommelier).
+- La seule vraie nouveauté : les instructions de l'agent.
 
 Présente-moi d'abord ton plan complet. N'écris aucun code avant ma
 validation.`;
