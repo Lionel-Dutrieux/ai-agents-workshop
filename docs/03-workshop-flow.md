@@ -14,7 +14,7 @@
 | 1:40 | 20 min | **Module 4 — Agent multi-étapes** : `ToolLoopAgent`, contrôle de la boucle, affichage des étapes dans l'UI | Hands-on |
 | 2:00 | 30 min | **Module 5 — Serveur MCP** : créer un serveur MCP avec le SDK officiel et le connecter à l'agent du module 4 (MCP Inspector en démo formateur) | Hands-on |
 | 2:30 | 15 min | **Module 7 — Microsoft Foundry** : démo d'agent managé (SDK Foundry, auth Entra ID) | Démo |
-| 2:45 | 10 min | **Wrap-up** — récap, ressources, Q&A | Présentation |
+| 2:45 | 10 min | **Wrap-up** — récap, ressources, Q&A + si le temps le permet, démo « développer avec l'IA » (module 00, ~8 min scriptées) | Présentation + démo |
 
 Total : 175 min sur 180 → **~5 min de marge**.
 
@@ -45,6 +45,18 @@ finir en autonomie après la séance.
   - **L'injection indirecte** (module 6) : glisser une consigne piégée dans
     une fiche produit via la sandbox et montrer l'agent l'ignorer grâce au
     durcissement du system prompt (voir « ✅ Tester » de la fiche 06).
+
+## Module 00 — la démo « développer avec l'IA » (au wrap-up)
+
+Le module 00 ([`00-dev-avec-ia.md`](../exercices/00-dev-avec-ia.md)) est une
+démo de ~8 min à jouer **pendant le wrap-up** si le timing le permet, sinon à
+pointer comme take-home. Deux prompts scriptés (verbatim dans la fiche) :
+compréhension de la codebase, puis mini-feature « Sommelier Brewly » en plan
+mode avec revue du diff en live et tool call sur les données de la sandbox.
+Consignes de préparation (répétition, branche jetable, plan B) dans
+[00-guide-presentateur.md](00-guide-presentateur.md). À mentionner en une
+phrase dès l'intro : « tout ce repo a été construit comme ça, on en reparle
+à la fin ».
 
 ## Principes de conception
 
